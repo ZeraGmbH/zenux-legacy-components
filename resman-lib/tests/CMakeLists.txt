@@ -17,31 +17,6 @@ target_link_libraries(resman-test-helpers
     resman-lib
     )
 
-enable_testing()
-
-function(SETUP_TESTS)
-    foreach(_testname ${ARGN})
-        add_test(NAME ${_testname}
-                 COMMAND ${_testname})
-        add_executable(${_testname}
-            ${_testname}.h
-            ${_testname}.cpp
-            )
-        target_include_directories(${_testname}
-            PUBLIC
-            $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
-            $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/resource>
-            $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/scpi>
-            $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/server>
-            )
-        target_link_libraries(${_testname}
-            PUBLIC
-            Qt5::Test
-            resman-test-helpers
-            )
-    endforeach()
-endfunction()
-
 SETUP_TESTS(
     test_scpi
 )
