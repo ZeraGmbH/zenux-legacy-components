@@ -15,7 +15,7 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(GenerateExportHeader)
 
-find_package(Qt5 COMPONENTS Core XmlPatterns Test CONFIG REQUIRED)
+find_package(Qt5 COMPONENTS Core Network XmlPatterns Test CONFIG REQUIRED)
 find_package(VeinFramework REQUIRED)
 find_package(SCPI REQUIRED)
 find_package(ZenuxCore REQUIRED)
@@ -42,8 +42,6 @@ function(SETUP_QTESTS)
     endforeach()
 endfunction()
 
-add_subdirectory(service-common-code)
-
 write_basic_package_version_file(
     ZenuxLegacyComponentsConfigVersion.cmake
     VERSION ${PACKAGE_VERSION}
@@ -61,5 +59,8 @@ install(EXPORT ZenuxLegacyComponentsExport
     NAMESPACE Zera::
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ZenuxLegacyComponents
     )
+
+add_subdirectory(service-common-code)
+add_subdirectory(resman-lib)
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
