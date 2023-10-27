@@ -24,7 +24,7 @@ enable_testing()
 
 # Inspired by
 # https://github.com/KDAB/kdabtv/blob/master/Qt-Widgets-and-more/UnitTests/Tests/CMakeLists.txt
-function(SETUP_QTESTS)
+function(SETUP_TESTS)
     foreach(_testname ${ARGN})
         add_test(NAME ${_testname} COMMAND ${_testname})
         add_executable(${_testname} ${_testname}.h ${_testname}.cpp)
@@ -36,8 +36,9 @@ function(SETUP_QTESTS)
         target_link_libraries(${_testname}
             PUBLIC
             Qt5::Test
-            zera-timers-testlib
-            tasks-base-testlib
+            Zera::zera-timers-testlib
+            Zera::tasks-base-testlib
+            resman-test-helpers
             )
     endforeach()
 endfunction()
