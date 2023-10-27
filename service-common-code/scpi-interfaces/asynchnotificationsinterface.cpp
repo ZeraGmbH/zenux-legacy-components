@@ -9,7 +9,6 @@ enum commands
 AsynchNotificationsInterface::AsynchNotificationsInterface(cSCPI *scpiInterface) :
     ScpiConnection(scpiInterface)
 {
-
 }
 
 void AsynchNotificationsInterface::initSCPIConnection(QString leadingNodes)
@@ -21,5 +20,6 @@ void AsynchNotificationsInterface::initSCPIConnection(QString leadingNodes)
 
 void AsynchNotificationsInterface::executeProtoScpi(int cmdCode, cProtonetCommand *protoCmd)
 {
-
+    Q_UNUSED(cmdCode)
+    Q_UNUSED(protoCmd)
 }
