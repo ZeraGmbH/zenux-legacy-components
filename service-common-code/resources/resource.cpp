@@ -1,19 +1,15 @@
-#include <QString>
-
 #include "resource.h"
 #include "rmconnection.h"
-
+#include <QString>
 
 cResource::cResource(cSCPI *scpiInterface) :
     ScpiConnection(scpiInterface)
 {
 }
 
-
 cResource::~cResource()
 {
 }
-
 
 void cResource::register1Resource(RMConnection *rmConnection, quint32 msgnr, QString registerParameter)
 {
@@ -22,7 +18,6 @@ void cResource::register1Resource(RMConnection *rmConnection, quint32 msgnr, QSt
     rmConnection->SendCommand(cmd, registerParameter, msgnr);
 }
 
-
 void cResource::unregister1Resource(RMConnection *rmConnection, quint32 msgnr, QString unregisterParameter)
 {
     QString cmd = QString("RESOURCE:REMOVE");
@@ -30,14 +25,11 @@ void cResource::unregister1Resource(RMConnection *rmConnection, quint32 msgnr, Q
     rmConnection->SendCommand(cmd, unregisterParameter, msgnr);
 }
 
-
 void cResource::resourceManagerAck(quint32 msgnr)
 {
-    if (msgNrList.contains(msgnr))
-    {
+    if (msgNrList.contains(msgnr)) {
         msgNrList.removeOne(msgnr);
         if (msgNrList.isEmpty())
             emit registerRdy();
     }
 }
-
