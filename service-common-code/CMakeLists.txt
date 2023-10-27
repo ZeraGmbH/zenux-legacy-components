@@ -27,7 +27,7 @@ target_link_libraries(service-common-code
     Zera::xiqnet
     Zera::SCPI
     Zera::zera-xmlconfig
-    Zera::zera-math
+    zera-math
     Zera::zera-timers
     # ask linker to help us finding unresolved symbols
     "-Wl,--no-undefined"
@@ -54,7 +54,7 @@ install(FILES
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/service-common-code
     )
 
-export(TARGETS service-common-code NAMESPACE Zera:: FILE ZeraClassesTargets.cmake)
+export(TARGETS service-common-code NAMESPACE Zera:: FILE ZenuxLegacyComponentsTargets.cmake)
 install(TARGETS service-common-code
     EXPORT ZenuxLegacyComponentsExport
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
