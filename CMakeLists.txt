@@ -63,5 +63,6 @@ install(EXPORT ZenuxLegacyComponentsExport
 
 add_subdirectory(service-common-code)
 add_subdirectory(resman-lib)
+add_subdirectory(zera-math)
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
