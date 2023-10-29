@@ -11,7 +11,7 @@ class RMConnection: public QObject
 {
     Q_OBJECT
 public:
-    RMConnection(QString ipadr, quint16 port, quint8 dlevel);
+    RMConnection(QString ipadr, quint16 port);
     void connect2RM();
     void SendIdent(QString ident);
 public slots:
@@ -19,7 +19,6 @@ public slots:
 private:
     QString m_sIPAdr;
     quint16 m_nPort;
-    quint8 m_nDebugLevel;
     QString m_sCommand;
     XiQNetPeer* m_pResourceManagerClient;
     XiQNetWrapper m_ProtobufWrapper;

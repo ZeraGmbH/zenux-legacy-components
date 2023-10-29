@@ -1,11 +1,10 @@
 #include "rmconnection.h"
 
-RMConnection::RMConnection(QString ipadr, quint16 port, quint8 dlevel) :
+RMConnection::RMConnection(QString ipadr, quint16 port) :
     m_sIPAdr(ipadr),
-    m_nPort(port),
-    m_nDebugLevel(dlevel)
+    m_nPort(port)
 {
-    m_pResourceManagerClient = 0;
+    m_pResourceManagerClient = nullptr;
 }
 
 void RMConnection::connect2RM()
