@@ -38,6 +38,12 @@ void cPCBServer::initSCPIConnection(QString leadingNodes)
     addDelegate(QString("%1SERVER").arg(leadingNodes),"UNREGISTER",SCPI::isQuery | SCPI::isCmd, m_pSCPIInterface, cmdUnregister);
 }
 
+void cPCBServer::openServerPorts()
+{
+    myServer->startServer(m_pETHSettings->getPort(EthSettings::protobufserver)); // and can start the server now
+    m_pSCPIServer->listen(QHostAddress::AnyIPv4, m_pETHSettings->getPort(EthSettings::scpiserver));
+}
+
 cSCPI *cPCBServer::getSCPIInterface()
 {
     return m_pSCPIInterface;
