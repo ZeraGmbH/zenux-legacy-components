@@ -24,7 +24,7 @@ public:
     QString& getName();
     QString& getVersion();
 
-    EthSettings* m_pETHSettings;
+    EthSettings m_ethSettings;
 
 public slots:
     void sendAnswerProto(cProtonetCommand* protoCmd);
@@ -40,7 +40,7 @@ protected:
     void executeProtoScpi(int cmdCode, cProtonetCommand* protoCmd) override;
     XiQNetServer* myServer; // the real server that does the communication job
     XiQNetWrapper m_ProtobufWrapper;
-    Zera::XMLConfig::cReader* myXMLConfigReader; // the xml configurator
+    Zera::XMLConfig::cReader m_xmlConfigReader;
     QString m_sConfigurationPath;
     QList<ScpiConnection*> scpiConnectionList; // a list of all scpi connections
     QList<cResource*> resourceList;
