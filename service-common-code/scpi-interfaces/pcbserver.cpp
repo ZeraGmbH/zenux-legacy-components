@@ -25,17 +25,17 @@ enum commands
 
 cPCBServer::cPCBServer(QString name, QString version, cSCPI *scpiInterface) :
     ScpiConnection(scpiInterface),
+    m_ethSettings(&m_xmlConfigReader),
     m_sServerName(name),
     m_sServerVersion(version)
 {
-    myXMLConfigReader = new Zera::XMLConfig::cReader();
 }
 
 void cPCBServer::initSCPIConnection(QString leadingNodes)
 {
     ensureTrailingColonOnNonEmptyParentNodes(leadingNodes);
-    addDelegate(QString("%1SERVER").arg(leadingNodes),"REGISTER",SCPI::isCmdwP, m_pSCPIInterface, cmdRegister);
-    addDelegate(QString("%1SERVER").arg(leadingNodes),"UNREGISTER",SCPI::isQuery | SCPI::isCmd, m_pSCPIInterface, cmdUnregister);
+    addDelegate(QString("%1SERVER").arg(leadingNodes), "REGISTER", SCPI::isCmdwP, m_pSCPIInterface, cmdRegister);
+    addDelegate(QString("%1SERVER").arg(leadingNodes), "UNREGISTER", SCPI::isQuery | SCPI::isCmd, m_pSCPIInterface, cmdUnregister);
 }
 
 cSCPI *cPCBServer::getSCPIInterface()
@@ -58,7 +58,7 @@ void cPCBServer::setupServer()
     myServer = new XiQNetServer(this); // our working (talking) horse
     myServer->setDefaultWrapper(&m_ProtobufWrapper);
     connect(myServer,&XiQNetServer::sigClientConnected,this,&cPCBServer::onEstablishNewConnection);
-    if (m_pETHSettings->isSCPIactive()) {
+    if(m_ethSettings.isSCPIactive()) {
         m_pSCPIServer = new QTcpServer();
         m_pSCPIServer->setMaxPendingConnections(1); // we only accept 1 client to connect
         connect(m_pSCPIServer, &QTcpServer::newConnection, this, &cPCBServer::setSCPIConnection);
