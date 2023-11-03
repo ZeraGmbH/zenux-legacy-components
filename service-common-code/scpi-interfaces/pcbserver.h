@@ -26,8 +26,6 @@ public:
     QString& getVersion();
 
     EthSettings m_ethSettings;
-    virtual void sendNotificationToClient(NotificationStructWithValue notData, quint32 irqreg);
-
 public slots:
     void sendAnswerProto(cProtonetCommand* protoCmd);
 protected slots:
@@ -59,6 +57,7 @@ private:
     void registerNotifier(cProtonetCommand* protoCmd); // registeres 1 notifier per command
     void unregisterNotifier(cProtonetCommand *protoCmd); // unregisters all notifiers
     void doUnregisterNotifier(XiQNetPeer *peer, const QByteArray &clientID = QByteArray());
+    void sendNotificationToClient(NotificationStructWithValue notData, quint32 irqreg);
 private slots:
     void onEstablishNewConnection(XiQNetPeer* newClient);
     void onExecuteCommandProto(std::shared_ptr<google::protobuf::Message> cmd);
