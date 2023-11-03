@@ -4,6 +4,7 @@
 #include "scpiconnection.h"
 #include "resource.h"
 #include "ethsettings.h"
+#include "notificationstructwithvalue.h"
 #include <scpi.h>
 #include <xiqnetwrapper.h>
 #include <netmessages.pb.h>
@@ -25,6 +26,7 @@ public:
     QString& getVersion();
 
     EthSettings m_ethSettings;
+    virtual void sendNotificationToClient(NotificationStructWithValue notData, quint32 irqreg);
 
 public slots:
     void sendAnswerProto(cProtonetCommand* protoCmd);
@@ -51,6 +53,8 @@ private:
     QString m_sServerVersion;
     QString m_sInput, m_sOutput;
     QTcpSocket* resourceManagerSocket;
+    QList<NotificationStructWithValue> m_notifierRegisterNext;
+    QList<NotificationStructWithValue> m_notifierRegisterList;
 
     void registerNotifier(cProtonetCommand* protoCmd); // registeres 1 notifier per command
     void unregisterNotifier(cProtonetCommand *protoCmd); // unregisters all notifiers
@@ -59,6 +63,8 @@ private slots:
     void onEstablishNewConnection(XiQNetPeer* newClient);
     void onExecuteCommandProto(std::shared_ptr<google::protobuf::Message> cmd);
     void onNotifyPeerConnectionClosed();
+    void onEstablishNewNotifier(NotificationValue *notifier);
+    void onNotifierChanged(quint32 irqreg);
 signals:
     void notifierRegistred(NotificationString* notifier);
     void removeSubscribers(XiQNetPeer* peer, const QByteArray &clientID);
