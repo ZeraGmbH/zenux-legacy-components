@@ -1,7 +1,5 @@
 #include "pcbserver.h"
 #include "protonetcommand.h"
-#include "scpiconnection.h"
-#include "ethsettings.h"
 #include <xiqnetpeer.h>
 #include <xmlconfigreader.h>
 #include <xiqnetserver.h>
