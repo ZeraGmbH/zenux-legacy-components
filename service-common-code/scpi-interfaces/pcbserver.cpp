@@ -178,29 +178,8 @@ void cPCBServer::SCPIdisconnect()
 
 void cPCBServer::onSendNotification(ScpiNotificationSubscriber subscriber)
 {
-    QString s = QString("Notify:%1").arg(subscriber.m_notifierId);
-    if (subscriber.m_clientId.isEmpty()) { // old style communication
-        QByteArray block;
-        QDataStream out(&block, QIODevice::WriteOnly);
-        out.setVersion(QDataStream::Qt_4_0);
-        out << (qint32)0;
-
-        out << s.toUtf8();
-        out.device()->seek(0);
-        out << (qint32)(block.size() - sizeof(qint32));
-
-        subscriber.m_netPeer->getTcpSocket()->write(block);
-    }
-    else {
-        ProtobufMessage::NetMessage protobufIntMessage;
-        ProtobufMessage::NetMessage::NetReply *intMessage = protobufIntMessage.mutable_reply();
-        intMessage->set_body(s.toStdString());
-        intMessage->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ACK);
-        QByteArray id = subscriber.m_clientId;
-        protobufIntMessage.set_clientid(id, id.count());
-        protobufIntMessage.set_messagenr(0); // interrupt
-        subscriber.m_netPeer->sendMessage(protobufIntMessage);
-    }
+    QString notificationMsg = QString("Notify:%1").arg(subscriber.m_notifierId);
+    sendNotificationToClient(notificationMsg, subscriber.m_clientId, subscriber.m_netPeer);
 }
 
 void cPCBServer::registerNotifier(cProtonetCommand *protoCmd)
@@ -353,30 +332,26 @@ void cPCBServer::onEstablishNewNotifier(NotificationValue *notifier)
     }
 }
 
-void cPCBServer::sendNotificationToClient(NotificationStructWithValue notData, quint32 irqreg)
+void cPCBServer::sendNotificationToClient(QString message, QByteArray clientID, XiQNetPeer *netPeer)
 {
-    QString s = QString("IRQ:%1").arg(irqreg);
-    if (notData.clientID.isEmpty()) { // old style communication
+    if (clientID.isEmpty()) { // old style communication
         QByteArray block;
         QDataStream out(&block, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_4_0);
         out << (qint32)0;
-
-        out << s.toUtf8();
+        out << message.toUtf8();
         out.device()->seek(0);
         out << (qint32)(block.size() - sizeof(qint32));
-
-        notData.netPeer->getTcpSocket()->write(block);
+        netPeer->getTcpSocket()->write(block);
     }
     else {
         ProtobufMessage::NetMessage protobufIntMessage;
         ProtobufMessage::NetMessage::NetReply *intMessage = protobufIntMessage.mutable_reply();
-        intMessage->set_body(s.toStdString());
+        intMessage->set_body(message.toStdString());
         intMessage->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ACK);
-        QByteArray id = notData.clientID;
-        protobufIntMessage.set_clientid(id, id.count());
+        protobufIntMessage.set_clientid(clientID, clientID.count());
         protobufIntMessage.set_messagenr(0); // interrupt
-        notData.netPeer->sendMessage(protobufIntMessage);
+        netPeer->sendMessage(protobufIntMessage);
     }
 }
 
@@ -388,7 +363,8 @@ void cPCBServer::onNotifierChanged(quint32 irqreg)
             for (int i = 0; i < m_notifierRegisterList.count(); i++) {
                 NotificationStructWithValue notData = m_notifierRegisterList.at(i);
                 if (notData.notValue == notifier) {
-                    sendNotificationToClient(notData, irqreg);
+                    QString notificationMsg = QString("IRQ:%1").arg(irqreg);
+                    sendNotificationToClient(notificationMsg, notData.clientID, notData.netPeer);
                 }
             }
     }
