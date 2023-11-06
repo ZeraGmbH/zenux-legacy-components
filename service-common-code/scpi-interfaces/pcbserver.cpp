@@ -210,7 +210,7 @@ void cPCBServer::registerNotifier(cProtonetCommand *protoCmd)
         else
             protoCmd->m_sOutput = SCPI::scpiAnswer[SCPI::nak];
     }
-    else if(cmd.isCommand(2)) {// mt310s2/com5003 service receives registerNotifier with 1 param
+    else if(cmd.isCommand(2)) {// mt310s2/com5003 service receives registerNotifier with 2 params
         QString query = cmd.getParam(0);
         cSCPIObject* scpiObject = m_pSCPIInterface->getSCPIObject(query);
         if(scpiObject) {
