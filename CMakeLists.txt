@@ -61,7 +61,6 @@ install(EXPORT ZenuxLegacyComponentsExport
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ZenuxLegacyComponents
     )
 
-add_subdirectory(service-common-code)
 add_subdirectory(resman-lib)
 add_subdirectory(zera-math)
 
