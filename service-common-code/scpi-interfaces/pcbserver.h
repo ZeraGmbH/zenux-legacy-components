@@ -15,11 +15,18 @@
 #include <QTcpSocket>
 #include <QByteArray>
 
+struct ServerParams
+{
+    QString name;
+    QString version;
+    QString xsdFile;
+};
+
 class cPCBServer: public ScpiConnection
 {
     Q_OBJECT
 public:
-    explicit cPCBServer(QString name, QString version, cSCPI *scpiInterface);
+    explicit cPCBServer(ServerParams params, cSCPI *scpiInterface);
     void initSCPIConnection(QString leadingNodes) override;
     cSCPI* getSCPIInterface();
     QString& getName();
@@ -47,8 +54,7 @@ protected:
     QTcpServer* m_pSCPIServer;
     QTcpSocket* m_pSCPISocket;
 private:
-    QString m_sServerName;
-    QString m_sServerVersion;
+    ServerParams m_params;
     QString m_sInput, m_sOutput;
     QTcpSocket* resourceManagerSocket;
     QList<NotificationStructWithValue> m_notifierRegisterNext;
