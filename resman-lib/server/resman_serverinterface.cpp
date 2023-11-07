@@ -30,9 +30,7 @@ ServerInterface::ServerInterface(SCPI::SCPIInterface *t_scpiInterface, QObject *
 ServerInterface::~ServerInterface()
 {
     for(ClientSocket *clientSocket : qAsConst(m_clientSockets))
-    {
         delete clientSocket;
-    }
     m_clientSockets.clear();
     delete m_defaultWrapper;
 }
