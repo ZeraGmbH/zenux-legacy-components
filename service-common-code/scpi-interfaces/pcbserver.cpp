@@ -21,11 +21,10 @@ enum commands
     cmdUnregister
 };
 
-cPCBServer::cPCBServer(QString name, QString version, cSCPI *scpiInterface) :
+cPCBServer::cPCBServer(ServerParams params, cSCPI *scpiInterface) :
     ScpiConnection(scpiInterface),
     m_ethSettings(&m_xmlConfigReader),
-    m_sServerName(name),
-    m_sServerVersion(version)
+    m_params(params)
 {
 }
 
@@ -43,12 +42,12 @@ cSCPI *cPCBServer::getSCPIInterface()
 
 QString &cPCBServer::getName()
 {
-    return m_sServerName;
+    return m_params.name;
 }
 
 QString &cPCBServer::getVersion()
 {
-    return m_sServerVersion;
+    return m_params.version;
 }
 
 void cPCBServer::setupServer()
