@@ -4,8 +4,6 @@
 #include "resman_serverinterface.h"
 #include "resourcemanager.h"
 #include "resman_scpiinterface.h"
-#include "resman_resource.h"
-#include "resman_resourceidentity.h"
 
 class ResmanRunFacade
 {
