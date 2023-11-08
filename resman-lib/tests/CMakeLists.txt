@@ -19,4 +19,5 @@ target_link_libraries(resman-test-helpers
 
 SETUP_TESTS(
     test_scpi
+    test_connect_disconnect_free_all_mem
 )
