@@ -33,6 +33,7 @@ ServerInterface::~ServerInterface()
         delete clientSocket;*/
     m_clientSockets.clear();
     delete m_defaultWrapper;
+    delete m_zServer;
 }
 
 void ServerInterface::start()
