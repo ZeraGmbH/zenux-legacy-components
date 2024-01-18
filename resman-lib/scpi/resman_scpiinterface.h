@@ -1,5 +1,5 @@
-#ifndef SCPIINTERFACE_H
-#define SCPIINTERFACE_H
+#ifndef RESMANSCPIINTERFACE_H
+#define RESMANSCPIINTERFACE_H
 
 #include <QObject>
 #include <QSet>
@@ -158,4 +158,4 @@ private:
     Q_DISABLE_COPY(SCPIInterface)
 };
 }
-#endif // SCPIINTERFACE_H
+#endif // RESMANSCPIINTERFACE_H
