@@ -34,7 +34,7 @@ public:
     QString getIpAdress() const;
 
 signals:
-    void sigAboutToDisconnect();
+    void sigAboutToDisconnect(XiQNetPeer *peer);
     void sigDisconnectedClientId(const QByteArray &t_clientId);
     void sigClientIdentified(ClientMultiton *t_clientMultiton);
     void sigClientMultitonDisconnected(ClientMultiton *t_clientMultiton);
@@ -44,12 +44,12 @@ public slots:
     void doSendDebug(const QString &t_message, const QByteArray &t_cID=QByteArray()) const;
     void doSendError(const QString &t_message=QString(), const QByteArray &t_cID=QByteArray()) const;
     void doSendNACK(const QString &t_message=QString(), const QByteArray &t_cID=QByteArray()) const;
-    void onMessageReceived(std::shared_ptr<google::protobuf::Message> t_message);
 
 private slots:
     void onDisconnectCleanup();
-
+    void onMessageReceived(XiQNetPeer *thisPeer, QByteArray message);
 private:
+    void handleMessageReceivedProto(std::shared_ptr<google::protobuf::Message> t_message);
     void sendMessage(ProtobufMessage::NetMessage &t_message) const;
     XiQNetPeer* m_zClient;
     QQueue<qint64> m_messageIdQueue;

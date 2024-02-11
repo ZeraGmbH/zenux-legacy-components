@@ -19,11 +19,9 @@ namespace ResourceServer
 ServerInterface::ServerInterface(SCPI::SCPIInterface *t_scpiInterface, QObject *t_parent) :
     QObject(t_parent),
     m_scpiInterface(t_scpiInterface),
-    m_zServer(new XiQNetServer(this)),
-    m_defaultWrapper(new RMProtobufWrapper())
+    m_zServer(new XiQNetServer(this))
 {
     Q_ASSERT(t_scpiInterface != nullptr);
-    m_zServer->setDefaultWrapper(m_defaultWrapper);
     connect(m_zServer, &XiQNetServer::sigClientConnected,this, &ServerInterface::newClient);
 }
 
@@ -32,7 +30,6 @@ ServerInterface::~ServerInterface()
     /*for(ClientSocket *clientSocket : qAsConst(m_clientSockets))
         delete clientSocket;*/
     m_clientSockets.clear();
-    delete m_defaultWrapper;
     delete m_zServer;
 }
 
