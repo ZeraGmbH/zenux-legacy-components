@@ -38,7 +38,6 @@ private:
     SCPI::SCPIInterface *m_scpiInterface = nullptr;
     QList<ClientSocket*> m_clientSockets;
     XiQNetServer* m_zServer = nullptr;
-    RMProtobufWrapper* m_defaultWrapper = nullptr;
     Q_DISABLE_COPY(ServerInterface)
 };
 }

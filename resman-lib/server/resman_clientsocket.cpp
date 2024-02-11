@@ -1,6 +1,7 @@
 #include "resman_clientsocket.h"
 
 #include "resman_clientmultiton.h"
+#include "rmprotobufwrapper.h"
 
 #include <xiqnetpeer.h>
 #include <QByteArray>
@@ -91,7 +92,7 @@ void ClientSocket::doSendNACK(const QString &t_message, const QByteArray &t_cID)
     sendMessage(envelope);
 }
 
-void ClientSocket::onMessageReceived(std::shared_ptr<google::protobuf::Message> t_message)
+void ClientSocket::handleMessageReceivedProto(std::shared_ptr<google::protobuf::Message> t_message)
 {
     std::shared_ptr<ProtobufMessage::NetMessage> envelope = nullptr;
     envelope = std::static_pointer_cast<ProtobufMessage::NetMessage>(t_message);
@@ -162,13 +163,19 @@ void ClientSocket::onDisconnectCleanup()
     m_clientSockets.clear();
 }
 
+void ClientSocket::onMessageReceived(XiQNetPeer *thisPeer, QByteArray message)
+{
+    Q_UNUSED(thisPeer)
+    RMProtobufWrapper protbufWrapper;
+    handleMessageReceivedProto(protbufWrapper.byteArrayToProtobuf(message));
+}
+
 void ClientSocket::sendMessage(ProtobufMessage::NetMessage &t_message) const
 {
     qint64 tmp_mID = m_messageIdQueue.last();
     if(tmp_mID>0 && tmp_mID<4294967296) // check for legacy mode, the value has to fit into a uint32
-    {
         t_message.set_messagenr(tmp_mID);
-    }
-    m_zClient->sendMessage(t_message);
+    RMProtobufWrapper protbufWrapper;
+    m_zClient->sendMessage(protbufWrapper.protobufToByteArray(t_message));
 }
 }
