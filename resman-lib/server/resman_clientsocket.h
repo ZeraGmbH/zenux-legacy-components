@@ -1,13 +1,11 @@
 #ifndef H2012_CLIENT_H
 #define H2012_CLIENT_H
 
+#include <vtcp_peer.h>
 #include <QObject>
 #include <QQueue>
 #include <QHash>
-
 #include <memory>
-
-class XiQNetPeer;
 
 namespace google
 {
@@ -29,12 +27,12 @@ class ClientSocket : public QObject
 {
     Q_OBJECT
 public:
-    explicit ClientSocket(XiQNetPeer *t_clientSocket, QObject *parent = 0);
+    explicit ClientSocket(VeinTcp::TcpPeer *t_clientSocket, QObject *parent = 0);
     ~ClientSocket();
     QString getIpAdress() const;
 
 signals:
-    void sigAboutToDisconnect(XiQNetPeer *peer);
+    void sigAboutToDisconnect(VeinTcp::TcpPeer *peer);
     void sigDisconnectedClientId(const QByteArray &t_clientId);
     void sigClientIdentified(ClientMultiton *t_clientMultiton);
     void sigClientMultitonDisconnected(ClientMultiton *t_clientMultiton);
@@ -47,11 +45,11 @@ public slots:
 
 private slots:
     void onDisconnectCleanup();
-    void onMessageReceived(XiQNetPeer *thisPeer, QByteArray message);
+    void onMessageReceived(VeinTcp::TcpPeer *thisPeer, QByteArray message);
 private:
     void handleMessageReceivedProto(std::shared_ptr<google::protobuf::Message> t_message);
     void sendMessage(ProtobufMessage::NetMessage &t_message) const;
-    XiQNetPeer* m_zClient;
+    VeinTcp::TcpPeer* m_zClient;
     QQueue<qint64> m_messageIdQueue;
 
     //QSet<QByteArray> m_clientIds;

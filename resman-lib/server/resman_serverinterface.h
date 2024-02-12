@@ -1,11 +1,9 @@
 #ifndef H2012_SERVERINTERFACE_H
 #define H2012_SERVERINTERFACE_H
 
+#include <vtcp_server.h>
 #include <QObject>
 #include <QSet>
-
-class XiQNetServer;
-class XiQNetPeer;
 
 class RMProtobufWrapper;
 
@@ -29,7 +27,7 @@ public:
 
 public slots:
     void clientDisconnected(ClientSocket *t_clientSocket);
-    void newClient(XiQNetPeer *t_newClient);
+    void newClient(VeinTcp::TcpPeer *t_newClient);
     void onClientIdentified(ResourceServer::IClientMultiton *t_clientMultiton);
 signals:
     void sigClientDisconnected(ResourceServer::IClientMultiton *t_clientMultiton);
@@ -37,7 +35,7 @@ signals:
 private:
     SCPI::SCPIInterface *m_scpiInterface = nullptr;
     QList<ClientSocket*> m_clientSockets;
-    XiQNetServer* m_zServer = nullptr;
+    VeinTcp::TcpServer* m_zServer = nullptr;
     Q_DISABLE_COPY(ServerInterface)
 };
 }
