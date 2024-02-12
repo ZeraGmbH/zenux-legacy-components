@@ -6,8 +6,8 @@
 
 #include "rmprotobufwrapper.h"
 
-#include <xiqnetserver.h>
-#include <xiqnetpeer.h>
+#include <vtcp_server.h>
+#include <vtcp_peer.h>
 
 
 #include <QDebug>
@@ -19,10 +19,10 @@ namespace ResourceServer
 ServerInterface::ServerInterface(SCPI::SCPIInterface *t_scpiInterface, QObject *t_parent) :
     QObject(t_parent),
     m_scpiInterface(t_scpiInterface),
-    m_zServer(new XiQNetServer(this))
+    m_zServer(new VeinTcp::TcpServer(this))
 {
     Q_ASSERT(t_scpiInterface != nullptr);
-    connect(m_zServer, &XiQNetServer::sigClientConnected,this, &ServerInterface::newClient);
+    connect(m_zServer, &VeinTcp::TcpServer::sigClientConnected,this, &ServerInterface::newClient);
 }
 
 ServerInterface::~ServerInterface()
@@ -45,7 +45,7 @@ void ServerInterface::clientDisconnected(ClientSocket *t_clientSocket)
     delete t_clientSocket;
 }
 
-void ServerInterface::newClient(XiQNetPeer *t_newClient)
+void ServerInterface::newClient(VeinTcp::TcpPeer *t_newClient)
 {
     Q_ASSERT(t_newClient != nullptr);
     ClientSocket* tmpClient = new ClientSocket(t_newClient);

@@ -3,22 +3,22 @@
 #include "resman_clientmultiton.h"
 #include "rmprotobufwrapper.h"
 
-#include <xiqnetpeer.h>
+#include <vtcp_peer.h>
 #include <QByteArray>
 
 #include <QDebug>
 
 namespace ResourceServer
 {
-ClientSocket::ClientSocket(XiQNetPeer *t_clientSocket, QObject *t_parent) :
+ClientSocket::ClientSocket(VeinTcp::TcpPeer *t_clientSocket, QObject *t_parent) :
     QObject(t_parent),
     m_zClient(t_clientSocket)
 {
     Q_ASSERT(t_clientSocket != nullptr);
 
     m_zClient->setParent(this);
-    connect(m_zClient, &XiQNetPeer::sigMessageReceived, this, &ClientSocket::onMessageReceived);
-    connect(m_zClient, &XiQNetPeer::sigConnectionClosed, this, &ClientSocket::sigAboutToDisconnect);
+    connect(m_zClient, &VeinTcp::TcpPeer::sigMessageReceived, this, &ClientSocket::onMessageReceived);
+    connect(m_zClient, &VeinTcp::TcpPeer::sigConnectionClosed, this, &ClientSocket::sigAboutToDisconnect);
     connect(this, &ClientSocket::sigAboutToDisconnect, this, &ClientSocket::onDisconnectCleanup);
 }
 
@@ -163,7 +163,7 @@ void ClientSocket::onDisconnectCleanup()
     m_clientSockets.clear();
 }
 
-void ClientSocket::onMessageReceived(XiQNetPeer *thisPeer, QByteArray message)
+void ClientSocket::onMessageReceived(VeinTcp::TcpPeer *thisPeer, QByteArray message)
 {
     Q_UNUSED(thisPeer)
     RMProtobufWrapper protbufWrapper;
