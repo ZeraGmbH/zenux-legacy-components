@@ -16,10 +16,22 @@
 namespace ResourceServer
 {
 
-ServerInterface::ServerInterface(SCPI::SCPIInterface *t_scpiInterface, QObject *t_parent) :
+ServerInterface::ServerInterface(SCPI::SCPIInterface *t_scpiInterface,
+                                 QObject *t_parent) :
     QObject(t_parent),
     m_scpiInterface(t_scpiInterface),
     m_zServer(new VeinTcp::TcpServer(this))
+{
+    Q_ASSERT(t_scpiInterface != nullptr);
+    connect(m_zServer, &VeinTcp::TcpServer::sigClientConnected,this, &ServerInterface::newClient);
+}
+
+ServerInterface::ServerInterface(SCPI::SCPIInterface *t_scpiInterface,
+                                 VeinTcp::AbstractTcpWorkerFactoryPtr tcpWorkerFactory,
+                                 QObject *t_parent) :
+    QObject(t_parent),
+    m_scpiInterface(t_scpiInterface),
+    m_zServer(new VeinTcp::TcpServer(tcpWorkerFactory, this))
 {
     Q_ASSERT(t_scpiInterface != nullptr);
     connect(m_zServer, &VeinTcp::TcpServer::sigClientConnected,this, &ServerInterface::newClient);
