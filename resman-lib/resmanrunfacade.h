@@ -9,6 +9,9 @@ class ResmanRunFacade
 {
 public:
     ResmanRunFacade();
+    ResmanRunFacade(VeinTcp::AbstractTcpWorkerFactoryPtr tcpWorkerFactory);
+    void init();
+
 private:
     ResourceManager m_resMan;
     SCPI::SCPIInterface m_scpiInterface;
