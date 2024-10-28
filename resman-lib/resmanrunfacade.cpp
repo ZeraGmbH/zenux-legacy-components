@@ -7,7 +7,7 @@ ResmanRunFacade::ResmanRunFacade() :
     init();
 }
 
-ResmanRunFacade::ResmanRunFacade(VeinTcp::AbstractTcpWorkerFactoryPtr tcpNetworkFactory) :
+ResmanRunFacade::ResmanRunFacade(VeinTcp::AbstractTcpNetworkFactoryPtr tcpNetworkFactory) :
     m_scpiInterface(&m_resMan),
     m_serverInterface(&m_scpiInterface, tcpNetworkFactory)
 {

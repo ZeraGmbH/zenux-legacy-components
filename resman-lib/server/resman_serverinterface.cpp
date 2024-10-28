@@ -27,7 +27,7 @@ ServerInterface::ServerInterface(SCPI::SCPIInterface *t_scpiInterface,
 }
 
 ServerInterface::ServerInterface(SCPI::SCPIInterface *t_scpiInterface,
-                                 VeinTcp::AbstractTcpWorkerFactoryPtr tcpNetworkFactory,
+                                 VeinTcp::AbstractTcpNetworkFactoryPtr tcpNetworkFactory,
                                  QObject *t_parent) :
     QObject(t_parent),
     m_scpiInterface(t_scpiInterface),
