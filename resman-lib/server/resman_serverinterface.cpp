@@ -27,11 +27,11 @@ ServerInterface::ServerInterface(SCPI::SCPIInterface *t_scpiInterface,
 }
 
 ServerInterface::ServerInterface(SCPI::SCPIInterface *t_scpiInterface,
-                                 VeinTcp::AbstractTcpWorkerFactoryPtr tcpWorkerFactory,
+                                 VeinTcp::AbstractTcpWorkerFactoryPtr tcpNetworkFactory,
                                  QObject *t_parent) :
     QObject(t_parent),
     m_scpiInterface(t_scpiInterface),
-    m_zServer(new VeinTcp::TcpServer(tcpWorkerFactory, this))
+    m_zServer(new VeinTcp::TcpServer(tcpNetworkFactory, this))
 {
     Q_ASSERT(t_scpiInterface != nullptr);
     connect(m_zServer, &VeinTcp::TcpServer::sigClientConnected,this, &ServerInterface::newClient);

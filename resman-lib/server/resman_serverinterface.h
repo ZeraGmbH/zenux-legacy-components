@@ -24,7 +24,7 @@ class ServerInterface : public QObject
 public:
     explicit ServerInterface(SCPI::SCPIInterface *t_scpiInterface, QObject *t_parent = 0);
     explicit ServerInterface(SCPI::SCPIInterface *t_scpiInterface,
-                             VeinTcp::AbstractTcpWorkerFactoryPtr tcpWorkerFactory, QObject *t_parent = 0);
+                             VeinTcp::AbstractTcpWorkerFactoryPtr tcpNetworkFactory, QObject *t_parent = 0);
     ~ServerInterface();
     void start();
 
