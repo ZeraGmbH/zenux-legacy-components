@@ -8,7 +8,6 @@
 class ResmanRunFacade
 {
 public:
-    ResmanRunFacade();
     ResmanRunFacade(VeinTcp::AbstractTcpNetworkFactoryPtr tcpNetworkFactory);
     void init();
 
