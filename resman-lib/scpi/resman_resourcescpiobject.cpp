@@ -6,7 +6,7 @@
 namespace SCPI
 {
 ResourceSCPIObject::ResourceSCPIObject(const QString &name, quint8 type) :
-    cSCPIObject(name, type)
+    ScpiObject(name, type)
 {
 }
 

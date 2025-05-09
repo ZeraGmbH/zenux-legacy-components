@@ -8,8 +8,16 @@
 
 namespace Application
 {
-ResourceIdentity::ResourceIdentity(Resource *t_resource, ResourceServer::IClientMultiton *t_provider, SCPI::Catalog *t_catalog, cSCPIObject *t_scpiObject, cSCPICommand t_scpiCommand) :
-    m_resource(t_resource), m_provider(t_provider), m_catalog(t_catalog), m_scpiObject(t_scpiObject) , m_scpiCommand(t_scpiCommand)
+ResourceIdentity::ResourceIdentity(Resource *t_resource,
+                                   ResourceServer::IClientMultiton *t_provider,
+                                   SCPI::CatalogPtr t_catalog,
+                                   ScpiObjectPtr t_scpiObject,
+                                   cSCPICommand t_scpiCommand) :
+    m_resource(t_resource),
+    m_provider(t_provider),
+    m_catalog(t_catalog),
+    m_scpiObject(t_scpiObject),
+    m_scpiCommand(t_scpiCommand)
 {
     Q_ASSERT(s_scpiInterface != nullptr);
     Q_ASSERT(m_resource != nullptr);
@@ -24,7 +32,6 @@ ResourceIdentity::~ResourceIdentity()
     delete m_resource;
     //do not delete the provider here
     unRefCatalog();
-    delete m_scpiObject;
     s_scpiInterface->removeSCPICommand(m_scpiCommand);
 }
 
@@ -98,12 +105,12 @@ const ResourceServer::IClientMultiton *ResourceIdentity::getProvider() const
     return m_provider;
 }
 
-SCPI::Catalog *ResourceIdentity::getCatalog() const
+std::shared_ptr<SCPI::Catalog> ResourceIdentity::getCatalog() const
 {
     return m_catalog;
 }
 
-const cSCPIObject *ResourceIdentity::getSCPIObject() const
+const ScpiObjectPtr ResourceIdentity::getSCPIObject() const
 {
     return m_scpiObject;
 }
@@ -140,7 +147,6 @@ void ResourceIdentity::unRefCatalog()
     if(m_catalog->getRefCount() == 0)
     {
         s_scpiInterface->removeSCPICommand(cSCPICommand(QString("RESOURCE:%1:CATALOG").arg(m_catalog->getCatalogType())));
-        delete m_catalog;
     }
 }
 
@@ -156,10 +162,10 @@ bool ResourceIdentity::isAffiliatedWithImpl(const ResourceServer::IClientMultito
 
 bool ResourceIdentity::isAffiliatedWithImpl(const SCPI::Catalog *t_filter) const
 {
-    return m_catalog == t_filter;
+    return m_catalog .get() == t_filter;
 }
 
-bool ResourceIdentity::isAffiliatedWithImpl(const cSCPIObject *t_filter) const
+bool ResourceIdentity::isAffiliatedWithImpl(const ScpiObjectPtr t_filter) const
 {
     return m_scpiObject == t_filter;
 }

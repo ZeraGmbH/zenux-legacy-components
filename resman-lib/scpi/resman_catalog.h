@@ -3,6 +3,7 @@
 
 #include <scpiobject.h>
 #include <QString>
+#include <memory>
 
 class ResourceManager;
 
@@ -11,7 +12,7 @@ namespace SCPI
 /**
   * @brief Provides functions to list resources of a given type
   */
-class Catalog : public cSCPIObject
+class Catalog : public ScpiObject
 {
 public:
     Catalog(ResourceManager *t_resMan, const QString &scpiName, quint8 scpiType);
@@ -61,6 +62,9 @@ private:
     const ResourceManager *m_resMan = nullptr;
     Q_DISABLE_COPY(Catalog)
 };
+
+typedef std::shared_ptr<Catalog> CatalogPtr;
+
 }
 
 #endif // CATALOG_H

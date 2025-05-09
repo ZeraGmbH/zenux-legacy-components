@@ -7,6 +7,7 @@
 #include <netmessages.pb.h>
 #include <scpi.h>
 #include "resman_delegate.h"
+#include "resman_catalog.h"
 #include "resman_iclientmultiton.h"
 
 namespace ResourceServer
@@ -21,15 +22,8 @@ class Resource;
 
 class ResourceManager;
 
-/**
-  @brief The SCPI namespace holds all the SCPI related classes and interfaces
-  */
 namespace SCPI
 {
-class Catalog;
-/**
-    @brief this encapsulates redundant entries for the add / remove parameters
-    */
 namespace CommandParams
 {
 /**
@@ -112,40 +106,21 @@ private:
      * @param t_scpiHierarchy
      * @return the SCPI::Catalog for the t_resource type is returned
      */
-    Catalog *getOrCreateResourceTypeCatalog(const QString &t_resourceType, const QStringList &t_scpiHierarchy);
+    CatalogPtr getOrCreateResourceTypeCatalog(const QString &t_resourceType, const QStringList &t_scpiHierarchy);
 
     /**
      * @brief getTypedCatalogHash
      * @return a hash of all catalogs by resource type is returned
      */
-    QHash<QString, Catalog *> getTypedCatalogHash() const;
+    QHash<QString, std::shared_ptr<Catalog>> getTypedCatalogHash() const;
 
-    /**
-      @brief represents the RESOURCE:ADD in the SCPI tree
-      */
-    Delegate* m_addResource = new Delegate("ADD", isCmdwP);
-    /**
-      @brief represents the RESOURCE:(TYPE):CATALOG in the SCPI tree
-      */
-    Delegate* m_catalogType = new Delegate("CATALOG", isCmd);
-    /**
-      @brief represents the RESOURCE:REMOVE in the SCPI tree
-      */
-    Delegate* m_removeResource = new Delegate("REMOVE", isCmdwP);
+    DelegatePtr m_addResource = std::make_shared<Delegate>("ADD", isCmdwP);
+    DelegatePtr m_catalogType = std::make_shared<Delegate>("CATALOG", isCmd);
+    DelegatePtr m_removeResource = std::make_shared<Delegate>("REMOVE", isCmdwP);
+    DelegatePtr m_resourceModel = std::make_shared<Delegate>("MODEL",isQuery);
+    DelegatePtr m_resourceProvider = std::make_shared<Delegate>("PROVIDER",isCmdwP);
 
-    /**
-     * @brief Retrieves the XMLized model of the SCPI tree structure
-     */
-    Delegate* m_resourceModel = new Delegate("MODEL",isQuery);
-    /**
-      @brief Retrieves the service information for the resource
-      */
-    Delegate* m_resourceProvider = new Delegate("PROVIDER",isCmdwP);
-
-    /**
-      @brief SCPI library interaction is held here
-      */
-    cSCPI* m_scpiInstance = new cSCPI();
+    cSCPI m_scpiInstance;
 
     /**
      * @brief pointer to the resource manager

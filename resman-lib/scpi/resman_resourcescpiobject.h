@@ -2,18 +2,15 @@
 #define RESOURCEOBJECT_H
 
 #include <scpiobject.h>
-
-namespace Application
-{
-class ResourceIdentity;
-}
+#include <resman_resourceidentity.h>
+#include <memory>
 
 namespace SCPI
 {
 /**
     @brief Represents the resource in the SCPI world
     */
-class ResourceSCPIObject : public cSCPIObject
+class ResourceSCPIObject : public ScpiObject
 {
 public:
     /**
@@ -36,5 +33,8 @@ public:
 private:
     Application::ResourceIdentity *m_resourceIdentity = nullptr;
 };
+
+typedef std::shared_ptr<ResourceSCPIObject> ResourceSCPIObjectPtr;
+
 }
 #endif // RESOURCEOBJECT_H

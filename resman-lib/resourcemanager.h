@@ -43,7 +43,7 @@ public:
       * @brief getResourceIdentitiesOf
       * @param t_filter
       * @return a list with all matches is returned
-      * @note comparing with Resource *, cSCPIObject * or cSCPICommand will only return one match as they only exist in 1:1 association with the resource identities
+      * @note comparing with Resource *, ScpiObject * or cSCPICommand will only return one match as they only exist in 1:1 association with the resource identities
       */
     QList<Application::ResourceIdentity *> getResourceIdentitiesOf(T t_filter) const
     {

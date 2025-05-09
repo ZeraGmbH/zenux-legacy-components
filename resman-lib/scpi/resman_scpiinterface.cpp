@@ -22,12 +22,12 @@ SCPIInterface::SCPIInterface(ResourceManager *t_resourceManager, QObject *t_pare
     Q_ASSERT(m_resourceManager != nullptr);
     //Add all default cSCPIObjects
     QStringList aTMP = {{"RESOURCE"}};
-    m_scpiInstance->insertScpiCmd(aTMP,m_addResource);
-    m_scpiInstance->insertScpiCmd(aTMP,m_removeResource);
-    m_scpiInstance->insertScpiCmd(aTMP,m_resourceModel);
-    m_scpiInstance->insertScpiCmd(aTMP,m_resourceProvider);
+    m_scpiInstance.insertScpiCmd(aTMP,m_addResource);
+    m_scpiInstance.insertScpiCmd(aTMP,m_removeResource);
+    m_scpiInstance.insertScpiCmd(aTMP,m_resourceModel);
+    m_scpiInstance.insertScpiCmd(aTMP,m_resourceProvider);
     aTMP<<"TYPE";
-    m_scpiInstance->insertScpiCmd(aTMP,m_catalogType);
+    m_scpiInstance.insertScpiCmd(aTMP,m_catalogType);
 }
 
 QString SCPIInterface::listTypes() const
@@ -39,7 +39,7 @@ QString SCPIInterface::listTypes() const
 
 void SCPIInterface::removeSCPICommand(cSCPICommand t_command)
 {
-    m_scpiInstance->delSCPICmds(t_command);
+    m_scpiInstance.delSCPICmds(t_command);
 }
 
 void SCPIInterface::onScpiTransaction(ResourceServer::IClientMultiton *t_clientMultiton, const ProtobufMessage::NetMessage_ScpiCommand &t_pbSCPICommand)
@@ -48,10 +48,9 @@ void SCPIInterface::onScpiTransaction(ResourceServer::IClientMultiton *t_clientM
 
     QString answer="";
     const cSCPICommand command(QString("%1 %2").arg(QString::fromStdString(t_pbSCPICommand.command())).arg(QString::fromStdString(t_pbSCPICommand.parameter())));
-    cSCPIObject *tmpObject=m_scpiInstance->getSCPIObject(command); //check which scpi node is triggered
+    ScpiObjectPtr tmpObject = m_scpiInstance.getSCPIObject(command); //check which scpi node is triggered
 
-    if(tmpObject!=nullptr)
-    {
+    if(tmpObject!=nullptr) {
         bool retVal=false;
         /// @todo remove debug code
         answer=QString("Command: %2 Params(%3): %4;").arg(command.getCommand()).arg(command.getParamCount()).arg(command.getParamList().join(';'));
@@ -80,12 +79,12 @@ void SCPIInterface::onScpiTransaction(ResourceServer::IClientMultiton *t_clientM
         else if(tmpObject==m_resourceModel) // return XMLized qstandarditem model
         {
             answer="";
-            m_scpiInstance->exportSCPIModelXML(answer);
+            m_scpiInstance.exportSCPIModelXML(answer);
             retVal=true;
         }
         else if(tmpObject==m_resourceProvider) // return IP address and port
         {
-            Application::ResourceIdentity *resourceIdentity = m_resourceManager->getResourceIdentityOf<cSCPIObject *>(tmpObject);
+            Application::ResourceIdentity *resourceIdentity = m_resourceManager->getResourceIdentityOf<ScpiObjectPtr>(tmpObject);
             if(resourceIdentity != nullptr)
             {
                 answer = QString("%1;%2;").arg(resourceIdentity->getProvider()->getIpAddress()).arg(resourceIdentity->getResource()->getPort());
@@ -101,11 +100,11 @@ void SCPIInterface::onScpiTransaction(ResourceServer::IClientMultiton *t_clientM
             answer=listTypes();
             retVal=true;
         }
-        else // this is a true cSCPIObject try the standard routine
+        else // this is a true ScpiObject try the standard routine
         {
             if(!tmpObject->executeSCPI(command.getCommand(),answer))
             {
-                Application::ResourceIdentity *resourceIdentity = m_resourceManager->getResourceIdentityOf<cSCPIObject *>(tmpObject);
+                Application::ResourceIdentity *resourceIdentity = m_resourceManager->getResourceIdentityOf<ScpiObjectPtr>(tmpObject);
                 if(resourceIdentity != nullptr)
                 {
                     if(command.getParam(SetParams::command).toLower()==SetParams::SET_RESOURCE)
@@ -187,15 +186,15 @@ bool SCPIInterface::scpiAddResource(cSCPICommand t_command, ResourceServer::ICli
             const QString resourceType = newResource->getType();
             //the scpi subsections where the resource will be recognized
             const QStringList scpiHierarchy { "RESOURCE", resourceType};
-            ResourceSCPIObject* newResourceSCPIObject = new ResourceSCPIObject(newResource->getName(), isQuery);
-            Catalog *resCatalog = getOrCreateResourceTypeCatalog(resourceType, scpiHierarchy);
+            ResourceSCPIObjectPtr newResourceSCPIObject = std::make_shared<ResourceSCPIObject>(newResource->getName(), isQuery);
+            CatalogPtr resCatalog = getOrCreateResourceTypeCatalog(resourceType, scpiHierarchy);
             cSCPICommand tmpCommand(QString("%1:%2").arg(scpiHierarchy.join(':')).arg(newResource->getName()));
             Application::ResourceIdentity *resourceIdentity = new Application::ResourceIdentity(newResource, t_clientMultiton, resCatalog, newResourceSCPIObject, tmpCommand);
 
             newResourceSCPIObject->setResourceIdentity(resourceIdentity);
 
             m_resourceManager->addResourceIdentity(resourceIdentity);
-            m_scpiInstance->insertScpiCmd(scpiHierarchy,newResourceSCPIObject);
+            m_scpiInstance.insertScpiCmd(scpiHierarchy,newResourceSCPIObject);
 
             retVal=true;
         }
@@ -211,12 +210,12 @@ bool SCPIInterface::scpiAddResource(cSCPICommand t_command, ResourceServer::ICli
     return retVal;
 }
 
-Catalog *SCPIInterface::getOrCreateResourceTypeCatalog(const QString &t_resourceType, const QStringList &t_scpiHierarchy)
+CatalogPtr SCPIInterface::getOrCreateResourceTypeCatalog(const QString &t_resourceType, const QStringList &t_scpiHierarchy)
 {
     ///@note do not upref the catalog, since it is done in the Application::ResourceIdentity constructor
-    Catalog *retVal = nullptr;
+    std::shared_ptr<Catalog> retVal;
     //look for an existing catalog for the type res->getType()
-    QHash<QString, Catalog *> resourceCatalogHash = getTypedCatalogHash();
+    QHash<QString, std::shared_ptr<Catalog>> resourceCatalogHash = getTypedCatalogHash();
 
     if(resourceCatalogHash.contains(t_resourceType))
     {
@@ -224,23 +223,23 @@ Catalog *SCPIInterface::getOrCreateResourceTypeCatalog(const QString &t_resource
     }
     else //add a new catalog for the type
     {
-        Catalog* newCatalog= new Catalog(m_resourceManager, "CATALOG", isCmd);
+        std::shared_ptr<Catalog> newCatalog= std::make_shared<Catalog>(m_resourceManager, "CATALOG", isCmd);
         newCatalog->setCatalogType(t_resourceType);
-        m_scpiInstance->insertScpiCmd(t_scpiHierarchy, newCatalog);
+        m_scpiInstance.insertScpiCmd(t_scpiHierarchy, newCatalog);
         retVal = newCatalog;
     }
 
     return retVal;
 }
 
-QHash<QString, Catalog *> SCPIInterface::getTypedCatalogHash() const
+QHash<QString, std::shared_ptr<Catalog> > SCPIInterface::getTypedCatalogHash() const
 {
-    QHash<QString, Catalog *> retVal;
+    QHash<QString, std::shared_ptr<Catalog>> retVal;
     const QSet<Application::ResourceIdentity *> allResources = m_resourceManager->getResourceIdentitySet();
     QSetIterator<Application::ResourceIdentity *> setIterator(allResources);
     while(setIterator.hasNext())
     {
-        Catalog *tmpCatalog = setIterator.next()->getCatalog();
+        std::shared_ptr<Catalog> tmpCatalog = setIterator.next()->getCatalog();
         retVal.insert(tmpCatalog->getCatalogType(), tmpCatalog);
     }
 

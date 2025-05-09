@@ -1,16 +1,11 @@
 #ifndef APPLICATION_RESOURCEIDENTITY_H
 #define APPLICATION_RESOURCEIDENTITY_H
 
+#include "resman_catalog.h"
+#include "resman_scpiinterface.h"
 #include <QtGlobal>
 #include <scpicommand.h>
-
-class cSCPIObject;
-
-namespace SCPI
-{
-class Catalog;
-class SCPIInterface;
-}
+#include <scpiobject.h>
 
 namespace ResourceServer
 {
@@ -29,10 +24,14 @@ public:
      * @param t_resource ResourceIdentity takes ownership of the Application::Resource
      * @param t_provider ResourceIdentity does not take ownership of the ResourceServer::IClientMultiton
      * @param t_catalog ResourceIdentity takes ownership of the SCPI::Catalog
-     * @param t_scpiObject ResourceIdentity takes ownership of the cSCPIObject
+     * @param t_scpiObject ResourceIdentity takes ownership of the ScpiObject
      * @param t_scpiCommand
      */
-    ResourceIdentity(Resource *t_resource, ResourceServer::IClientMultiton *t_provider, SCPI::Catalog *t_catalog, cSCPIObject *t_scpiObject, cSCPICommand t_scpiCommand);
+    ResourceIdentity(Resource *t_resource,
+                     ResourceServer::IClientMultiton *t_provider,
+                     SCPI::CatalogPtr t_catalog,
+                     ScpiObjectPtr t_scpiObject,
+                     cSCPICommand t_scpiCommand);
     ~ResourceIdentity();
     /**
      * @brief sets the interface
@@ -57,8 +56,8 @@ public:
 
     const Resource *getResource() const;
     const ResourceServer::IClientMultiton *getProvider() const;
-    SCPI::Catalog *getCatalog() const;
-    const cSCPIObject *getSCPIObject() const;
+    std::shared_ptr<SCPI::Catalog> getCatalog() const;
+    const ScpiObjectPtr getSCPIObject() const;
     cSCPICommand getSCPICommand() const;
 
     /**
@@ -99,7 +98,7 @@ private:
     bool isAffiliatedWithImpl(const Resource *t_filter) const;
     bool isAffiliatedWithImpl(const ResourceServer::IClientMultiton *t_filter) const;
     bool isAffiliatedWithImpl(const SCPI::Catalog *t_filter) const;
-    bool isAffiliatedWithImpl(const cSCPIObject *t_filter) const;
+    bool isAffiliatedWithImpl(const ScpiObjectPtr t_filter) const;
     bool isAffiliatedWithImpl(const cSCPICommand t_filter) const;
 
     /**
@@ -110,15 +109,8 @@ private:
      * @brief points to the creator of the resource
      */
     const ResourceServer::IClientMultiton *m_provider = nullptr;
-    /**
-     * @brief a shared pointer to the catalog the resource belongs to
-     * @note a refcount is used to track the Catalog usage
-     */
-    SCPI::Catalog *m_catalog = nullptr;
-    /**
-     * @brief the cSCPIObject in the scpi node tree that represents m_resource
-     */
-    const cSCPIObject *m_scpiObject = nullptr;
+    SCPI::CatalogPtr m_catalog;
+    ScpiObjectPtr m_scpiObject;
     /**
      * @brief the cSCPICommand of the scpi node
      */
