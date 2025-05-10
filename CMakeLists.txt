@@ -39,6 +39,8 @@ function(SETUP_TESTS)
             Zera::zera-timers-testlib
             Zera::tasks-base-testlib
             resman-test-helpers
+            zera-xmlconfig
+            xml-config-test-data
             )
     endforeach()
 endfunction()
@@ -63,5 +65,6 @@ install(EXPORT ZenuxLegacyComponentsExport
 
 add_subdirectory(resman-lib)
 add_subdirectory(zera-math)
+add_subdirectory(zera-xmlconfig)
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
