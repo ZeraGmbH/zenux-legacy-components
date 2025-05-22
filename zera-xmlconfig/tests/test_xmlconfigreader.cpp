@@ -10,6 +10,7 @@ static const QString xsdPath = QStringLiteral(TESTLIB_FILES_PATH) + QStringLiter
 void test_xmlconfigreader::initTestCase()
 {
     Q_INIT_RESOURCE(test_data);
+    Zera::XMLConfig::cReader::activateSchemaValidation(true);
 }
 
 void test_xmlconfigreader::schemaFound()
