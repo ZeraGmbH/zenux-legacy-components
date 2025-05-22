@@ -19,11 +19,13 @@ class ZERA_XMLCONFIG_EXPORT cReader : public QObject
 public:
     explicit cReader(QObject *parent = 0);
     ~cReader();
-    bool loadSchema(QString filePath);
-    bool loadXMLFile(QString path);
-    bool loadXMLFromString(QString xmlString);
-    QString getValue(QString key);
-    bool setValue(QString key, QString value);
+    static void activateSchemaValidation(bool activate);
+
+    bool loadSchema(const QString &filePath);
+    bool loadXMLFile(const QString &path);
+    bool loadXMLFromString(const QString &xmlString);
+    QString getValue(const QString &key);
+    bool setValue(const QString &key, const QString &value);
     QString getXMLConfig();
 signals:
     void valueChanged(QString key);
@@ -32,8 +34,12 @@ signals:
 protected:
     Zera::XMLConfig::cReaderPrivate *d_ptr;
 private:
+    bool loadXMLFromStringWithSchema(const QString &xmlString);
+    bool loadXMLFromStringWithoutSchema(const QString &xmlString);
     bool xml2Config(QIODevice* xmlData);
     void parseLists(QList<QString> oldList, QList<QString> newList, QXmlStreamWriter &writer);
+
+    static bool m_loadXmlWithSchema;
     Q_DISABLE_COPY(cReader)
     Q_DECLARE_PRIVATE(cReader)
 };

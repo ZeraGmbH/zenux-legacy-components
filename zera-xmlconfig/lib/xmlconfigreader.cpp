@@ -12,6 +12,9 @@ namespace Zera
 {
 namespace XMLConfig
 {
+
+bool cReader::m_loadXmlWithSchema = false;
+
 cReader::cReader(QObject *parent) :
     QObject(parent), d_ptr(new cReaderPrivate(this))
 {
@@ -22,7 +25,12 @@ cReader::~cReader()
     delete d_ptr;
 }
 
-bool cReader::loadSchema(QString filePath)
+void cReader::activateSchemaValidation(bool activate)
+{
+    m_loadXmlWithSchema = activate;
+}
+
+bool cReader::loadSchema(const QString &filePath)
 {
     bool retVal = false;
     QFile schemaFile(filePath);
@@ -32,63 +40,36 @@ bool cReader::loadSchema(QString filePath)
         d->data.clear();
         d->schemaFilePath=filePath;
         retVal = true;
-    } else {
-        qWarning("[zera-xml-config] schema file %s was not found!", qPrintable(filePath));
     }
+    else
+        qWarning("[zera-xml-config] schema file %s was not found!", qPrintable(filePath));
     return retVal;
 }
 
-bool cReader::loadXMLFile(QString path)
+bool cReader::loadXMLFile(const QString &path)
 {
-    bool ok = false;
     QFile xmlFile(path);
     if(xmlFile.open(QFile::ReadOnly)) {
         QString xml = xmlFile.readAll();
-        ok = loadXMLFromString(xml);
+        return loadXMLFromString(xml);
     }
-    return ok;
+    return false;
 }
 
-bool cReader::loadXMLFromString(QString xmlString)
+bool cReader::loadXMLFromString(const QString &xmlString)
 {
-    Q_D(cReader);
-    bool retVal = false;
-    QXmlSchema schema;
-    QFile schemaFile(d->schemaFilePath);
-    schemaFile.open(QFile::ReadOnly);
-
-    if(schema.load(&schemaFile,QUrl(d->schemaFilePath))) {
-        QXmlSchemaValidator sValidator(schema);
-        QByteArray baXmlData = xmlString.toUtf8();
-        QBuffer xmlDevice(&baXmlData);
-
-        xmlDevice.open(QBuffer::ReadOnly);
-        if(sValidator.validate(&xmlDevice)) {
-            xmlDevice.seek(0);
-            if(xml2Config(&xmlDevice)) {
-                retVal = true;
-            }
-        }
-        else {
-            qWarning("[zera-xml-config] %s is invalid", qPrintable(xmlString));
-        }
-        xmlDevice.close();
-    }
-    else {
-        qWarning() << "[zera-xml-config] schema is invalid";
-    }
-    emit finishedParsingXML(retVal);
-    schemaFile.close();
-    return retVal;
+    if (m_loadXmlWithSchema)
+        return loadXMLFromStringWithSchema(xmlString);
+    return loadXMLFromStringWithoutSchema(xmlString);
 }
 
-QString cReader::getValue(QString key)
+QString cReader::getValue(const QString &key)
 {
     Q_D(cReader);
     return d->data.getValue(key);
 }
 
-bool cReader::setValue(QString key, QString value)
+bool cReader::setValue(const QString &key, const QString &value)
 {
     Q_D(cReader);
     return d->data.modifyExisting(key, value);
@@ -117,6 +98,55 @@ QString cReader::getXMLConfig()
     return retVal;
 }
 
+bool cReader::loadXMLFromStringWithSchema(const QString &xmlString)
+{
+    Q_D(cReader);
+    bool retVal = false;
+
+    QXmlSchema schema;
+    QFile schemaFile(d->schemaFilePath);
+    schemaFile.open(QFile::ReadOnly);
+    if(schema.load(&schemaFile,QUrl(d->schemaFilePath))) {
+        QXmlSchemaValidator sValidator(schema);
+        QByteArray baXmlData = xmlString.toUtf8();
+        QBuffer xmlDevice(&baXmlData);
+
+        xmlDevice.open(QBuffer::ReadOnly);
+        if(sValidator.validate(&xmlDevice)) {
+            xmlDevice.seek(0);
+            if(xml2Config(&xmlDevice))
+                retVal = true;
+        }
+        else {
+            qWarning("[zera-xml-config] %s is invalid", qPrintable(xmlString));
+        }
+        xmlDevice.close();
+    }
+    else
+        qWarning() << "[zera-xml-config] schema is invalid";
+
+    schemaFile.close();
+    emit finishedParsingXML(retVal);
+    return retVal;
+}
+
+bool cReader::loadXMLFromStringWithoutSchema(const QString &xmlString)
+{
+    bool retVal = false;
+    QByteArray baXmlData = xmlString.toUtf8();
+    QBuffer xmlDevice(&baXmlData);
+
+    xmlDevice.open(QBuffer::ReadOnly);
+    if(xml2Config(&xmlDevice))
+        retVal = true;
+    else
+        qWarning("[zera-xml-config] %s is invalid", qPrintable(xmlString));
+
+    xmlDevice.close();
+    emit finishedParsingXML(retVal);
+    return retVal;
+}
+
 bool cReader::xml2Config(QIODevice *xmlData)
 {
     QStringList parents;
@@ -128,11 +158,10 @@ bool cReader::xml2Config(QIODevice *xmlData)
         switch(token) {
         // we read the actual data that stands between a start and an end node
         case QXmlStreamReader::Characters: {
-            QString fullPath = "";
             // ignore whitespaces
             if(!xmlReader.text().isEmpty()&&!xmlReader.isWhitespace()) {
                 Q_D(cReader);
-                fullPath = parents.join(":");
+                QString fullPath = parents.join(":");
                 d->data.insert(fullPath, xmlReader.text().toString());
                 emit valueChanged(fullPath);
             }

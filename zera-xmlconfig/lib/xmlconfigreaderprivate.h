@@ -13,14 +13,14 @@ public:
         m_keyList.clear();
         m_keyValueHash.clear();
     }
-    void insert(T_key key, T_value value)
+    void insert(const T_key &key, const T_value &value)
     {
         if(!m_keyList.contains(key)) {
             m_keyList.append(key);
         }
         m_keyValueHash[key] = value;
     }
-    bool modifyExisting(T_key key, T_value value)
+    bool modifyExisting(const T_key &key, const T_value &value)
     {
         auto iter = m_keyValueHash.find(key);
         if(iter != m_keyValueHash.end()) {
@@ -29,7 +29,7 @@ public:
         }
         return false;
     }
-    T_value getValue(T_key key) const
+    T_value getValue(const T_key &key) const
     {
         T_value retVal;
         auto iter = m_keyValueHash.find(key);
