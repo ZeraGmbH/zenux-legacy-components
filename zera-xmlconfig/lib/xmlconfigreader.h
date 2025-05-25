@@ -19,7 +19,6 @@ class ZERA_XMLCONFIG_EXPORT cReader : public QObject
 public:
     explicit cReader(QObject *parent = 0);
     ~cReader();
-    static void activateSchemaValidation(bool activate);
 
     bool loadSchema(const QString &filePath);
     bool loadXMLFile(const QString &path);
@@ -39,7 +38,6 @@ private:
     bool xml2Config(QIODevice* xmlData);
     void parseLists(QList<QString> oldList, QList<QString> newList, QXmlStreamWriter &writer);
 
-    static bool m_loadXmlWithSchema;
     Q_DISABLE_COPY(cReader)
     Q_DECLARE_PRIVATE(cReader)
 };

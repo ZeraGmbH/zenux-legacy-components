@@ -14,7 +14,7 @@ private slots:
     void schemaNotFound();
     void validPairSchemaXmlResourceFile();
     void validPairSchemaXmlFile();
-    void invalidNoSchema();
+    void validNoSchema();
 
     void invalidIP();
     void invalidYesNo();

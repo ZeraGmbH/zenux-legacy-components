@@ -10,7 +10,6 @@ static const QString xsdPath = QStringLiteral(TESTLIB_FILES_PATH) + QStringLiter
 void test_xmlconfigreader::initTestCase()
 {
     Q_INIT_RESOURCE(test_data);
-    Zera::XMLConfig::cReader::activateSchemaValidation(true);
 }
 
 void test_xmlconfigreader::schemaFound()
@@ -45,10 +44,10 @@ void test_xmlconfigreader::validPairSchemaXmlFile()
     QVERIFY(reader.loadXMLFile(xmlPath + "with-complex-valid.xml"));
 }
 
-void test_xmlconfigreader::invalidNoSchema()
+void test_xmlconfigreader::validNoSchema()
 {
     Zera::XMLConfig::cReader reader;
-    QVERIFY(!reader.loadXMLFile(":/xmls/with-complex-valid.xml"));
+    QVERIFY(reader.loadXMLFile(":/xmls/with-complex-valid.xml"));
 }
 
 void test_xmlconfigreader::invalidIP()

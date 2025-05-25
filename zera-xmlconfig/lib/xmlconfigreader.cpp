@@ -13,8 +13,6 @@ namespace Zera
 namespace XMLConfig
 {
 
-bool cReader::m_loadXmlWithSchema = false;
-
 cReader::cReader(QObject *parent) :
     QObject(parent), d_ptr(new cReaderPrivate(this))
 {
@@ -23,11 +21,6 @@ cReader::cReader(QObject *parent) :
 cReader::~cReader()
 {
     delete d_ptr;
-}
-
-void cReader::activateSchemaValidation(bool activate)
-{
-    m_loadXmlWithSchema = activate;
 }
 
 bool cReader::loadSchema(const QString &filePath)
@@ -58,7 +51,8 @@ bool cReader::loadXMLFile(const QString &path)
 
 bool cReader::loadXMLFromString(const QString &xmlString)
 {
-    if (m_loadXmlWithSchema)
+    Q_D(cReader);
+    if (!d->schemaFilePath.isEmpty())
         return loadXMLFromStringWithSchema(xmlString);
     return loadXMLFromStringWithoutSchema(xmlString);
 }
