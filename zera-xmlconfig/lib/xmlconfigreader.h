@@ -20,7 +20,6 @@ public:
     explicit cReader(QObject *parent = 0);
     ~cReader();
 
-    bool loadSchema(const QString &filePath);
     bool loadXMLFile(const QString &path);
     bool loadXMLFromString(const QString &xmlString);
     QString getValue(const QString &key);
@@ -33,7 +32,6 @@ signals:
 protected:
     Zera::XMLConfig::cReaderPrivate *d_ptr;
 private:
-    bool loadXMLFromStringWithSchema(const QString &xmlString);
     bool loadXMLFromStringWithoutSchema(const QString &xmlString);
     bool xml2Config(QIODevice* xmlData);
     void parseLists(QList<QString> oldList, QList<QString> newList, QXmlStreamWriter &writer);

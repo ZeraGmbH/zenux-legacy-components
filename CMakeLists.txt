@@ -15,7 +15,7 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(GenerateExportHeader)
 
-find_package(Qt5 COMPONENTS Core Network XmlPatterns Test CONFIG REQUIRED)
+find_package(Qt5 COMPONENTS Core Network Test CONFIG REQUIRED)
 find_package(VeinFramework REQUIRED)
 find_package(SCPI REQUIRED)
 find_package(ZenuxCore REQUIRED)

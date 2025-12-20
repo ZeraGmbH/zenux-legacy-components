@@ -9,16 +9,7 @@ class test_xmlconfigreader : public QObject
 private slots:
     void initTestCase();
 
-    void schemaFound();
-    void schemaFoundResource();
-    void schemaNotFound();
-    void validPairSchemaXmlResourceFile();
-    void validPairSchemaXmlFile();
     void validNoSchema();
-
-    void invalidIP();
-    void invalidYesNo();
-    void invalidKeySequence();
 
     void setGetValidIp();
     void setGetValidYesNoShouldNotWorkOnInvalid(); // how can we fix this???

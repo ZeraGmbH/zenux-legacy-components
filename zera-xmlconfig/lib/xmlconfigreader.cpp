@@ -1,7 +1,5 @@
 #include "xmlconfigreader.h"
 #include "xmlconfigreaderprivate.h"
-#include <QtXmlPatterns/QXmlSchemaValidator>
-#include <QtXmlPatterns/QXmlSchema>
 #include <QStringList>
 #include <QByteArray>
 #include <QFile>
@@ -23,22 +21,6 @@ cReader::~cReader()
     delete d_ptr;
 }
 
-bool cReader::loadSchema(const QString &filePath)
-{
-    bool retVal = false;
-    QFile schemaFile(filePath);
-    if(schemaFile.exists()) {
-        Q_D(cReader);
-        /// @todo evaluate wether clearing the data is reasonable
-        d->data.clear();
-        d->schemaFilePath=filePath;
-        retVal = true;
-    }
-    else
-        qWarning("[zera-xml-config] schema file %s was not found!", qPrintable(filePath));
-    return retVal;
-}
-
 bool cReader::loadXMLFile(const QString &path)
 {
     QFile xmlFile(path);
@@ -51,10 +33,19 @@ bool cReader::loadXMLFile(const QString &path)
 
 bool cReader::loadXMLFromString(const QString &xmlString)
 {
-    Q_D(cReader);
-    if (!d->schemaFilePath.isEmpty())
-        return loadXMLFromStringWithSchema(xmlString);
-    return loadXMLFromStringWithoutSchema(xmlString);
+    bool retVal = false;
+    QByteArray baXmlData = xmlString.toUtf8();
+    QBuffer xmlDevice(&baXmlData);
+
+    xmlDevice.open(QBuffer::ReadOnly);
+    if(xml2Config(&xmlDevice))
+        retVal = true;
+    else
+        qWarning("[zera-xml-config] %s is invalid", qPrintable(xmlString));
+
+    xmlDevice.close();
+    emit finishedParsingXML(retVal);
+    return retVal;
 }
 
 QString cReader::getValue(const QString &key)
@@ -89,55 +80,6 @@ QString cReader::getXMLConfig()
         stream.writeTextElement(elementName, d->data.getValue(key));
     }
     stream.writeEndDocument();
-    return retVal;
-}
-
-bool cReader::loadXMLFromStringWithSchema(const QString &xmlString)
-{
-    Q_D(cReader);
-    bool retVal = false;
-
-    QXmlSchema schema;
-    QFile schemaFile(d->schemaFilePath);
-    schemaFile.open(QFile::ReadOnly);
-    if(schema.load(&schemaFile,QUrl(d->schemaFilePath))) {
-        QXmlSchemaValidator sValidator(schema);
-        QByteArray baXmlData = xmlString.toUtf8();
-        QBuffer xmlDevice(&baXmlData);
-
-        xmlDevice.open(QBuffer::ReadOnly);
-        if(sValidator.validate(&xmlDevice)) {
-            xmlDevice.seek(0);
-            if(xml2Config(&xmlDevice))
-                retVal = true;
-        }
-        else {
-            qWarning("[zera-xml-config] %s is invalid", qPrintable(xmlString));
-        }
-        xmlDevice.close();
-    }
-    else
-        qWarning() << "[zera-xml-config] schema is invalid";
-
-    schemaFile.close();
-    emit finishedParsingXML(retVal);
-    return retVal;
-}
-
-bool cReader::loadXMLFromStringWithoutSchema(const QString &xmlString)
-{
-    bool retVal = false;
-    QByteArray baXmlData = xmlString.toUtf8();
-    QBuffer xmlDevice(&baXmlData);
-
-    xmlDevice.open(QBuffer::ReadOnly);
-    if(xml2Config(&xmlDevice))
-        retVal = true;
-    else
-        qWarning("[zera-xml-config] %s is invalid", qPrintable(xmlString));
-
-    xmlDevice.close();
-    emit finishedParsingXML(retVal);
     return retVal;
 }
 

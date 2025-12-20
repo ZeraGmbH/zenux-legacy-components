@@ -58,7 +58,6 @@ namespace Zera
             cReaderPrivate(cReader *parent);
         private:
             HashWithSortedKeys<QString, QString>data;
-            QString schemaFilePath;
             Zera::XMLConfig::cReader *q_ptr;
             Q_DECLARE_PUBLIC(cReader)
         };
