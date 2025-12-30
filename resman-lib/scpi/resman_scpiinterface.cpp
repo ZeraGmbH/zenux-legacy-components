@@ -44,9 +44,7 @@ QHash<QString, std::shared_ptr<Catalog>> SCPIInterface::getTypedCatalogHash() co
 
 QString SCPIInterface::listTypes() const
 {
-    QString retVal = getTypedCatalogHash().uniqueKeys().join(';');
-
-    return retVal;
+    return getTypedCatalogHash().keys().join(';');
 }
 
 void SCPIInterface::removeSCPICommand(cSCPICommand t_command)
