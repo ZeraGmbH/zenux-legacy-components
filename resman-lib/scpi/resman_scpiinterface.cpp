@@ -30,6 +30,18 @@ SCPIInterface::SCPIInterface(ResourceManager *t_resourceManager, QObject *t_pare
     m_scpiInstance.insertScpiCmd(aTMP,m_catalogType);
 }
 
+QHash<QString, std::shared_ptr<Catalog> > SCPIInterface::getTypedCatalogHash() const
+{
+    QHash<QString, std::shared_ptr<Catalog>> retVal;
+    const QSet<Application::ResourceIdentity *> allResources = m_resourceManager->getResourceIdentitySet();
+    QSetIterator<Application::ResourceIdentity *> setIterator(allResources);
+    while(setIterator.hasNext()) {
+        std::shared_ptr<Catalog> tmpCatalog = setIterator.next()->getCatalog();
+        retVal.insert(tmpCatalog->getCatalogType(), tmpCatalog);
+    }
+    return retVal;
+}
+
 QString SCPIInterface::listTypes() const
 {
     QString retVal = getTypedCatalogHash().uniqueKeys().join(';');
@@ -232,17 +244,4 @@ CatalogPtr SCPIInterface::getOrCreateResourceTypeCatalog(const QString &t_resour
     return retVal;
 }
 
-QHash<QString, std::shared_ptr<Catalog> > SCPIInterface::getTypedCatalogHash() const
-{
-    QHash<QString, std::shared_ptr<Catalog>> retVal;
-    const QSet<Application::ResourceIdentity *> allResources = m_resourceManager->getResourceIdentitySet();
-    QSetIterator<Application::ResourceIdentity *> setIterator(allResources);
-    while(setIterator.hasNext())
-    {
-        std::shared_ptr<Catalog> tmpCatalog = setIterator.next()->getCatalog();
-        retVal.insert(tmpCatalog->getCatalogType(), tmpCatalog);
-    }
-
-    return retVal;
-}
 }
