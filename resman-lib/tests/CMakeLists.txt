@@ -1,6 +1,3 @@
-# Inspired by
-# https://github.com/KDAB/kdabtv/blob/master/Qt-Widgets-and-more/UnitTests/Tests/CMakeLists.txt
-
 add_library(resman-test-helpers STATIC
     clientmultitontest.cpp
     clientmultitontest.h
