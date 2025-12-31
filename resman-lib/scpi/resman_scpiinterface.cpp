@@ -30,7 +30,7 @@ SCPIInterface::SCPIInterface(ResourceManager *t_resourceManager, QObject *t_pare
     m_scpiInstance.insertScpiCmd(aTMP,m_catalogType);
 }
 
-QHash<QString, std::shared_ptr<Catalog> > SCPIInterface::getTypedCatalogHash() const
+QHash<QString, std::shared_ptr<Catalog>> SCPIInterface::getTypedCatalogHash() const
 {
     QHash<QString, std::shared_ptr<Catalog>> retVal;
     const QSet<Application::ResourceIdentity *> allResources = m_resourceManager->getResourceIdentitySet();

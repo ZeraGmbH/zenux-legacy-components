@@ -37,12 +37,14 @@ void test_scpi::addValidResourceAndCatalog()
 void test_scpi::addValidResourceAndCatalogType()
 {
     sendScpi("RESOURCE:ADD SENSE;FOONAME;1;FOODESC;1000;");
+    sendScpi("RESOURCE:ADD SENSE;BARNAME;2;BARDESC;1000;");
     sendScpi("RESOURCE:ADD CALC;FOONAME;1;FOODESC;1000;");
+    sendScpi("RESOURCE:ADD CALC;BARNAME;2;BARDESC;2000;");
     sendScpi("RES:TYP:CAT?");
 
     QStringList ackList = m_client->getAckList();
-    QCOMPARE(ackList.count(), 3);
-    QStringList typeList = ackList[2].split(";");
+    QCOMPARE(ackList.count(), 5);
+    QStringList typeList = ackList[4].split(";");
     QCOMPARE(typeList.count(), 2);
     QVERIFY(typeList.contains("SENSE"));
     QVERIFY(typeList.contains("CALC"));
