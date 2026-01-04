@@ -1,6 +1,6 @@
 include(CMakeFindDependencyMacro)
 
-find_dependency(Qt5 COMPONENTS Core Test CONFIG REQUIRED)
+find_dependency(@QTX@ COMPONENTS Core Test CONFIG REQUIRED)
 find_dependency(VeinFramework REQUIRED)
 find_dependency(SCPI REQUIRED)
 find_dependency(ZenuxCore REQUIRED)

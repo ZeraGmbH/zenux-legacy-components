@@ -13,7 +13,7 @@ add_library(zera-math SHARED
 
 target_link_libraries(zera-math
     PUBLIC
-    Qt5::Core
+    ${QTX}::Core
     # ask linker to help us finding unresolved symbols
     "-Wl,--no-undefined"
     )

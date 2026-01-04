@@ -21,8 +21,8 @@ add_library(resman-lib STATIC
 
 target_link_libraries(resman-lib
     PUBLIC
-    Qt5::Core
-    Qt5::Network
+    ${QTX}::Core
+    ${QTX}::Network
     Zera::xiqnet
     Zera::zeraprotobuf
     Zera::SCPI

@@ -10,7 +10,7 @@ target_include_directories(resman-test-helpers
 
 target_link_libraries(resman-test-helpers
     PUBLIC
-    Qt5::Core
+    ${QTX}::Core
     Zera::zera-timers-testlib
     resman-lib
     )

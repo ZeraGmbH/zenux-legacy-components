@@ -15,7 +15,10 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(GenerateExportHeader)
 
-find_package(Qt5 COMPONENTS Core Network Test CONFIG REQUIRED)
+set(QT_MAJOR_VER "5" CACHE STRING "Qt major version")
+set(QTX "Qt${QT_MAJOR_VER}")
+
+find_package(${QTX} COMPONENTS Core Network Test CONFIG REQUIRED)
 find_package(VeinFramework REQUIRED)
 find_package(SCPI REQUIRED)
 find_package(ZenuxCore REQUIRED)
@@ -35,7 +38,7 @@ function(SETUP_TESTS)
             )
         target_link_libraries(${_testname}
             PUBLIC
-            Qt5::Test
+            ${QTX}::Test
             Zera::zera-timers-testlib
             Zera::tasks-base-testlib
             resman-test-helpers
