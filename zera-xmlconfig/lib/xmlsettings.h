@@ -15,7 +15,7 @@ class ZERA_XMLCONFIG_EXPORT XMLSettings: public QObject
 public:
     XMLSettings();
 public slots:
-    virtual void configXMLInfo(QString key) = 0;
+    virtual void configXMLInfo(const QString &key) = 0;
 protected:
     QMap<QString, quint16> m_ConfigXMLMap;
     Zera::XMLConfig::cReader* m_pXMLReader;
