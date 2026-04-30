@@ -1,11 +1,9 @@
 #include "resman_clientsocket.h"
-
 #include "resman_clientmultiton.h"
 #include "rmprotobufwrapper.h"
-
 #include <vtcp_peer.h>
+#include <xiqnetwrapper.h>
 #include <QByteArray>
-
 #include <QDebug>
 
 namespace ResourceServer
@@ -166,8 +164,7 @@ void ClientSocket::onDisconnectCleanup()
 void ClientSocket::onMessageReceived(VeinTcp::TcpPeer *thisPeer, QByteArray message)
 {
     Q_UNUSED(thisPeer)
-    RMProtobufWrapper protbufWrapper;
-    handleMessageReceivedProto(protbufWrapper.byteArrayToProtobuf(message));
+    handleMessageReceivedProto(RMProtobufWrapper::byteArrayToProtoRm(message));
 }
 
 void ClientSocket::sendMessage(ProtobufMessage::NetMessage &t_message) const
@@ -175,7 +172,6 @@ void ClientSocket::sendMessage(ProtobufMessage::NetMessage &t_message) const
     qint64 tmp_mID = m_messageIdQueue.last();
     if(tmp_mID>0 && tmp_mID<4294967296) // check for legacy mode, the value has to fit into a uint32
         t_message.set_messagenr(tmp_mID);
-    RMProtobufWrapper protbufWrapper;
-    m_zClient->sendMessage(protbufWrapper.protobufToByteArray(t_message));
+    m_zClient->sendMessage(XiQNetWrapper::protoToByteArray(t_message));
 }
 }

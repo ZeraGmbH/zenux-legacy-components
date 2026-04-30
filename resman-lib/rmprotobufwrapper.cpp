@@ -3,12 +3,7 @@
 #include <netmessages.pb.h>
 #include <QDebug>
 
-RMProtobufWrapper::RMProtobufWrapper()
-{
-}
-
-
-std::shared_ptr<google::protobuf::Message> RMProtobufWrapper::byteArrayToProtobuf(const QByteArray &data)
+std::shared_ptr<google::protobuf::Message> RMProtobufWrapper::byteArrayToProtoRm(const QByteArray &data)
 {
     std::shared_ptr<google::protobuf::Message> proto {new ProtobufMessage::NetMessage()};
     if(!proto->ParseFromArray(data, data.size()))

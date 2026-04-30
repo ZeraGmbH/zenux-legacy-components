@@ -1,14 +1,14 @@
 #ifndef PROTOBUFWRAPPER_H
 #define PROTOBUFWRAPPER_H
 
-#include <xiqnetwrapper.h>
+#include <QByteArray>
+#include <memory>
+#include <google/protobuf/message.h>
 
-class RMProtobufWrapper : public XiQNetWrapper
+class RMProtobufWrapper
 {
 public:
-    RMProtobufWrapper();
-
-    std::shared_ptr<google::protobuf::Message> byteArrayToProtobuf(const QByteArray &data) override;
+    static std::shared_ptr<google::protobuf::Message> byteArrayToProtoRm(const QByteArray &data);
 };
 
 #endif // PROTOBUFWRAPPER_H

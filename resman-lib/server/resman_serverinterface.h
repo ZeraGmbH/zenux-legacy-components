@@ -6,8 +6,6 @@
 #include <QObject>
 #include <QSet>
 
-class RMProtobufWrapper;
-
 namespace SCPI
 {
 class SCPIInterface;
