@@ -26,7 +26,7 @@ public:
     bool setValue(const QString &key, const QString &value);
     QString getXMLConfig();
 signals:
-    void valueChanged(QString key);
+    void valueChanged(const QString &key);
     void finishedParsingXML(bool ok);
 
 protected:
