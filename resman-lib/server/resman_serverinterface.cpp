@@ -1,25 +1,18 @@
 #include "resman_serverinterface.h"
 #include "resman_scpiinterface.h"
-#include "resman_resource.h"
 #include "resman_clientsocket.h"
 #include "resman_clientmultiton.h"
-
-#include "rmprotobufwrapper.h"
-
 #include <vtcp_server.h>
 #include <vtcp_peer.h>
-
-
 #include <QDebug>
-
 
 namespace ResourceServer
 {
 
 ServerInterface::ServerInterface(SCPI::SCPIInterface *t_scpiInterface,
-                                 VeinTcp::AbstractTcpNetworkFactoryPtr tcpNetworkFactory,
-                                 QObject *t_parent) :
-    QObject(t_parent),
+                                 const VeinTcp::AbstractTcpNetworkFactoryPtr &tcpNetworkFactory,
+                                 QObject *parent) :
+    QObject(parent),
     m_scpiInterface(t_scpiInterface),
     m_zServer(new VeinTcp::TcpServer(tcpNetworkFactory, this))
 {
