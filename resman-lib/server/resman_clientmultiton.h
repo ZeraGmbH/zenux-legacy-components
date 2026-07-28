@@ -56,12 +56,8 @@ public:
       * @param message Optional text
       */
     void doSendNACK(const QString &t_message=QString()) const override;
-public slots:
-    /**
-      * @brief Decodes incoming messages into a ProtobufMessage
-      * @param message Unparsed message
-      */
-    void onMessageReceived(std::shared_ptr<ProtobufMessage::NetMessage> t_envelope) override;
+
+    void onMessageReceived(const std::shared_ptr<ProtobufMessage::NetMessage> &message);
 
 private:
     QString m_name;

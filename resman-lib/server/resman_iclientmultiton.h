@@ -1,9 +1,9 @@
 #ifndef RESMAN_ICLIENTMULTITON_H
 #define RESMAN_ICLIENTMULTITON_H
 
+#include <netmessages.pb.h>
 #include <QObject>
 #include <QString>
-#include <netmessages.pb.h>
 
 namespace ResourceServer
 {
@@ -17,7 +17,7 @@ signals:
     /**
       *@brief Notifies the SCPI::SCPIInterface of new SCPI commands
       */
-    void sigScpiTransaction(IClientMultiton *t_clientMultiton, const ProtobufMessage::NetMessage_ScpiCommand &t_command);
+    void sigScpiTransaction(IClientMultiton *clientMultiton, const ProtobufMessage::NetMessage_ScpiCommand &command);
 public:
     /**
     * @brief Sends acknowledgement
@@ -26,8 +26,6 @@ public:
     virtual void doSendACK(const QString &t_message = QString()) const = 0;
     virtual void doSendError(const QString &t_message = QString()) const = 0;
     virtual void doSendNACK(const QString &t_message = QString()) const = 0;
-public slots:
-    virtual void onMessageReceived(std::shared_ptr<ProtobufMessage::NetMessage> t_envelope) = 0;
 };
 }
 

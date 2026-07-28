@@ -45,8 +45,3 @@ QStringList ClientMultitonTest::getErrList() const
 {
     return m_errList;
 }
-
-void ClientMultitonTest::onMessageReceived(std::shared_ptr<ProtobufMessage::NetMessage> t_envelope)
-{
-
-}

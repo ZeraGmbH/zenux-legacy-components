@@ -45,9 +45,9 @@ public slots:
 
 private slots:
     void onDisconnectCleanup();
-    void onMessageReceived(VeinTcp::TcpPeer *thisPeer, QByteArray message);
+    void onMessageReceived(VeinTcp::TcpPeer *thisPeer, const QByteArray &message);
 private:
-    void handleMessageReceivedProto(std::shared_ptr<google::protobuf::Message> t_message);
+    void handleMessageReceivedProto(const std::shared_ptr<google::protobuf::Message> &message);
     void sendMessage(ProtobufMessage::NetMessage &t_message) const;
     VeinTcp::TcpPeer* m_zClient;
     QQueue<qint64> m_messageIdQueue;

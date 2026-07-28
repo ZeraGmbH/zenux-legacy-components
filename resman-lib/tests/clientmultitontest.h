@@ -22,8 +22,6 @@ public:
     QStringList getAckList() const;
     QStringList getNackList() const;
     QStringList getErrList() const;
-public slots:
-    void onMessageReceived(std::shared_ptr<ProtobufMessage::NetMessage> t_envelope) override;
 
 private:
     QString m_name;

@@ -90,10 +90,10 @@ void ClientSocket::doSendNACK(const QString &t_message, const QByteArray &t_cID)
     sendMessage(envelope);
 }
 
-void ClientSocket::handleMessageReceivedProto(std::shared_ptr<google::protobuf::Message> t_message)
+void ClientSocket::handleMessageReceivedProto(const std::shared_ptr<google::protobuf::Message> &message)
 {
     std::shared_ptr<ProtobufMessage::NetMessage> envelope = nullptr;
-    envelope = std::static_pointer_cast<ProtobufMessage::NetMessage>(t_message);
+    envelope = std::static_pointer_cast<ProtobufMessage::NetMessage>(message);
     Q_ASSERT(envelope != nullptr);
 
     // return message to client to show that it was received
@@ -161,7 +161,7 @@ void ClientSocket::onDisconnectCleanup()
     m_clientSockets.clear();
 }
 
-void ClientSocket::onMessageReceived(VeinTcp::TcpPeer *thisPeer, QByteArray message)
+void ClientSocket::onMessageReceived(VeinTcp::TcpPeer *thisPeer, const QByteArray &message)
 {
     Q_UNUSED(thisPeer)
     handleMessageReceivedProto(RMProtobufWrapper::byteArrayToProtoRm(message));

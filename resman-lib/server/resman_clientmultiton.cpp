@@ -50,16 +50,16 @@ void ClientMultiton::doSendNACK(const QString &t_message) const
     m_parent->doSendNACK(t_message, m_clientId);
 }
 
-void ClientMultiton::onMessageReceived(std::shared_ptr<ProtobufMessage::NetMessage> t_envelope)
+void ClientMultiton::onMessageReceived(const std::shared_ptr<ProtobufMessage::NetMessage> &message)
 {
-    Q_ASSERT(t_envelope != nullptr);
-    if(t_envelope->has_reply())
+    Q_ASSERT(message != nullptr);
+    if(message->has_reply())
     {
-        switch(t_envelope->reply().rtype())
+        switch(message->reply().rtype())
         {
         case ProtobufMessage::NetMessage::NetReply::IDENT:
         {
-            m_name = QString::fromStdString(t_envelope->reply().body());
+            m_name = QString::fromStdString(message->reply().body());
             qDebug() << "Resourcemanager: Client identified" << m_name;
             doSendACK();
             break;
@@ -70,7 +70,7 @@ void ClientMultiton::onMessageReceived(std::shared_ptr<ProtobufMessage::NetMessa
         }
         case ProtobufMessage::NetMessage::NetReply::DEBUG:
         {
-            qDebug() << QString("Client '%1' sent debug message:\n%2").arg(m_name).arg(QString::fromStdString(t_envelope->reply().body()));
+            qDebug() << QString("Client '%1' sent debug message:\n%2").arg(m_name).arg(QString::fromStdString(message->reply().body()));
             break;
         }
         default:
@@ -81,9 +81,9 @@ void ClientMultiton::onMessageReceived(std::shared_ptr<ProtobufMessage::NetMessa
         }
         }
     }
-    if(t_envelope->has_scpi())
+    if(message->has_scpi())
     {
-        ProtobufMessage::NetMessage_ScpiCommand tmpCMD = t_envelope->scpi();
+        ProtobufMessage::NetMessage_ScpiCommand tmpCMD = message->scpi();
         emit sigScpiTransaction(this, tmpCMD);
     }
 }
