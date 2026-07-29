@@ -92,59 +92,51 @@ void ClientSocket::doSendNACK(const QString &t_message, const QByteArray &t_cID)
 
 void ClientSocket::handleMessageReceivedProto(const std::shared_ptr<google::protobuf::Message> &message)
 {
-    std::shared_ptr<ProtobufMessage::NetMessage> envelope = nullptr;
-    envelope = std::static_pointer_cast<ProtobufMessage::NetMessage>(message);
+    std::shared_ptr<ProtobufMessage::NetMessage> envelope = std::static_pointer_cast<ProtobufMessage::NetMessage>(message);
     Q_ASSERT(envelope != nullptr);
 
     // return message to client to show that it was received
-    QByteArray baTemp;
     if(envelope->has_messagenr())
-    {
         m_messageIdQueue.enqueue(envelope->messagenr());
-    }
     else
-    {
         //legacy mode
         m_messageIdQueue.enqueue(-1);
-    }
-    if(envelope->has_clientid())
-    {
-        baTemp = QByteArray(envelope->clientid().data(),envelope->clientid().size());
+
+    QByteArray clientId;
+    if(envelope->has_clientid()) {
+        clientId = QByteArray(envelope->clientid().data(),envelope->clientid().size());
         if(envelope->has_reply())
         {
             if(envelope->reply().rtype() == ProtobufMessage::NetMessage::NetReply::IDENT)
             {
-                if(!m_clientSockets.contains(baTemp))
+                if(!m_clientSockets.contains(clientId))
                 {
-                    ClientMultiton *tmpClientMult = new ClientMultiton(this, baTemp);
-                    m_clientSockets.insert(baTemp,tmpClientMult);
+                    ClientMultiton *tmpClientMult = new ClientMultiton(this, clientId);
+                    m_clientSockets.insert(clientId,tmpClientMult);
                     emit sigClientIdentified(tmpClientMult);
                 }
             }
         }
-        if(m_clientSockets.contains(baTemp))
-        {
-            m_clientSockets.value(baTemp)->onMessageReceived(envelope);
-        }
+        if(m_clientSockets.contains(clientId))
+            m_clientSockets.value(clientId)->onMessageReceived(envelope);
     }
-    else
-    {
+    else {
         //legacy mode
-        if(!m_clientSockets.contains(QByteArray()))
-        {
+        if(!m_clientSockets.contains(QByteArray())) {
             ClientMultiton *emtpyBA = new ClientMultiton(this, QByteArray());
             m_clientSockets.insert(QByteArray(),emtpyBA);
             emit sigClientIdentified(emtpyBA);
         }
         m_clientSockets.value(QByteArray())->onMessageReceived(envelope);
     }
+
     if(envelope->has_netcommand())
     {
         if(envelope->netcommand().cmd() == ProtobufMessage::NetMessage::NetCmd::CmdType::NetMessage_NetCmd_CmdType_RELEASE
-                && m_clientSockets.contains(baTemp))
+                && m_clientSockets.contains(clientId))
         {
-            delete m_clientSockets.value(baTemp);
-            m_clientSockets.remove(baTemp);
+            delete m_clientSockets.value(clientId);
+            m_clientSockets.remove(clientId);
         }
     }
     m_messageIdQueue.removeLast();
