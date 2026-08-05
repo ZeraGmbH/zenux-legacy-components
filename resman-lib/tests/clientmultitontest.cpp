@@ -1,6 +1,6 @@
 #include "clientmultitontest.h"
 
-ClientMultitonTest::ClientMultitonTest(QString name, QString ipAddress) :
+ClientMultitonTest::ClientMultitonTest(const QString &name, const QString &ipAddress) :
     m_name(name),
     m_ipAddress(ipAddress)
 {
@@ -16,32 +16,32 @@ QString ClientMultitonTest::getIpAddress() const
     return m_ipAddress;
 }
 
-void ClientMultitonTest::doSendACK(const QString &t_message) const
+void ClientMultitonTest::doSendACK(const QString &message)
 {
-    m_ackList.append(t_message);
+    m_ackList.append(message);
 }
 
-void ClientMultitonTest::doSendError(const QString &t_message) const
+void ClientMultitonTest::doSendError(const QString &message)
 {
-    m_errList.append(t_message);
+    m_errList.append(message);
 }
 
-void ClientMultitonTest::doSendNACK(const QString &t_message) const
+void ClientMultitonTest::doSendNACK(const QString &message)
 {
-    m_nackList.append(t_message);
+    m_nackList.append(message);
 }
 
-QStringList ClientMultitonTest::getAckList() const
+const QStringList &ClientMultitonTest::getAckList() const
 {
     return m_ackList;
 }
 
-QStringList ClientMultitonTest::getNackList() const
+const QStringList &ClientMultitonTest::getNackList() const
 {
     return m_nackList;
 }
 
-QStringList ClientMultitonTest::getErrList() const
+const QStringList &ClientMultitonTest::getErrList() const
 {
     return m_errList;
 }

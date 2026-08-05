@@ -45,7 +45,7 @@ void ServerInterface::newClient(VeinTcp::TcpPeer *t_newClient)
     Q_ASSERT(t_newClient != nullptr);
     ClientSocket* tmpClient = new ClientSocket(t_newClient);
     m_clientSockets.append(tmpClient);
-    connect(tmpClient, &ClientSocket::sigAboutToDisconnect, [this, tmpClient](){
+    connect(tmpClient, &ClientSocket::sigAboutToDisconnect, this, [this, tmpClient](){
         this->clientDisconnected(tmpClient);
     });
     connect(tmpClient, &ClientSocket::sigClientIdentified, this, &ServerInterface::onClientIdentified);

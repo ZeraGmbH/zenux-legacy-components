@@ -36,26 +36,10 @@ signals:
     void sigClientIdentified();
 
 public:
-    /**
-      * @brief Sends acknowledgement
-      * @param message Optional text
-      */
-    void doSendACK(const QString &t_message=QString()) const override;
-    /**
-      * @brief Sends debug informations
-      * @param message Required text
-      */
+    void doSendACK(const QString &t_message=QString()) override;
     void doSendDebug(const QString &t_message) const;
-    /**
-      * @brief Sends an error message
-      * @param message Optional text
-      */
-    void doSendError(const QString &t_message=QString()) const override;
-    /**
-      * @brief Sends negative acknowledgement
-      * @param message Optional text
-      */
-    void doSendNACK(const QString &t_message=QString()) const override;
+    void doSendError(const QString &t_message=QString()) override;
+    void doSendNACK(const QString &t_message=QString()) override;
 
     void onMessageReceived(const std::shared_ptr<ProtobufMessage::NetMessage> &message);
 

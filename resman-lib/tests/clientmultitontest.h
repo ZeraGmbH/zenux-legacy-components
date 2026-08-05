@@ -12,23 +12,23 @@ class ClientMultitonTest : public ResourceServer::IClientMultiton
 {
     Q_OBJECT
 public:
-    ClientMultitonTest(QString name, QString ipAddress);
+    ClientMultitonTest(const QString &name, const QString &ipAddress);
     QString getName() const override;
     QString getIpAddress() const override;
 public:
-    void doSendACK(const QString &t_message = QString()) const override;
-    void doSendError(const QString &t_message = QString()) const override;
-    void doSendNACK(const QString &t_message = QString()) const override;
-    QStringList getAckList() const;
-    QStringList getNackList() const;
-    QStringList getErrList() const;
+    void doSendACK(const QString &message = QString()) override;
+    void doSendError(const QString &message = QString()) override;
+    void doSendNACK(const QString &message = QString()) override;
+    const QStringList &getAckList() const;
+    const QStringList &getNackList() const;
+    const QStringList &getErrList() const;
 
 private:
     QString m_name;
     QString m_ipAddress;
-    mutable QStringList m_ackList;
-    mutable QStringList m_nackList;
-    mutable QStringList m_errList;
+    QStringList m_ackList;
+    QStringList m_nackList;
+    QStringList m_errList;
 };
 
 #endif // CLIENTMULTITONTEST_H

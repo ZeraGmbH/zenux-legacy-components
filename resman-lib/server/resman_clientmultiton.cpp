@@ -2,7 +2,6 @@
 
 #include "resman_clientsocket.h"
 #include "resman_scpiinterface.h"
-#include "resman_resource.h"
 #include <netmessages.pb.h>
 
 #include <QDebug>
@@ -30,7 +29,7 @@ QString ClientMultiton::getIpAddress() const
     return m_parent->getIpAdress();
 }
 
-void ClientMultiton::doSendACK(const QString &t_message) const
+void ClientMultiton::doSendACK(const QString &t_message)
 {
     m_parent->doSendACK(t_message, m_clientId);
 }
@@ -40,12 +39,12 @@ void ClientMultiton::doSendDebug(const QString &t_message) const
     m_parent->doSendDebug(t_message, m_clientId);
 }
 
-void ClientMultiton::doSendError(const QString &t_message) const
+void ClientMultiton::doSendError(const QString &t_message)
 {
     m_parent->doSendError(t_message, m_clientId);
 }
 
-void ClientMultiton::doSendNACK(const QString &t_message) const
+void ClientMultiton::doSendNACK(const QString &t_message)
 {
     m_parent->doSendNACK(t_message, m_clientId);
 }
@@ -70,7 +69,7 @@ void ClientMultiton::onMessageReceived(const std::shared_ptr<ProtobufMessage::Ne
         }
         case ProtobufMessage::NetMessage::NetReply::DEBUG:
         {
-            qDebug() << QString("Client '%1' sent debug message:\n%2").arg(m_name).arg(QString::fromStdString(message->reply().body()));
+            qDebug() << QString("Client '%1' sent debug message:\n%2").arg(m_name, QString::fromStdString(message->reply().body()));
             break;
         }
         default:

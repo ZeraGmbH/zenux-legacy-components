@@ -23,9 +23,9 @@ public:
     * @brief Sends acknowledgement
     * @param message Optional text
     */
-    virtual void doSendACK(const QString &t_message = QString()) const = 0;
-    virtual void doSendError(const QString &t_message = QString()) const = 0;
-    virtual void doSendNACK(const QString &t_message = QString()) const = 0;
+    virtual void doSendACK(const QString &t_message = QString()) = 0;
+    virtual void doSendError(const QString &t_message = QString()) = 0;
+    virtual void doSendNACK(const QString &t_message = QString()) = 0;
 };
 }
 

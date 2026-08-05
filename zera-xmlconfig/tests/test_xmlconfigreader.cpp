@@ -50,8 +50,8 @@ void test_xmlconfigreader::setWithInvalidKey()
 void test_xmlconfigreader::loadAndModifyExportSequenceOfFields()
 {
     Zera::XMLConfig::cReader reader;
-    QString xmlPath = ":/xmls/with-complex-valid.xml";
-    QVERIFY(reader.loadXMLFile(xmlPath));
+    QString xmlPathLocal = ":/xmls/with-complex-valid.xml";
+    QVERIFY(reader.loadXMLFile(xmlPathLocal));
     QString oldIp = "1.2.3.4";
     QString newIp = "192.168.2.5";
     QString xml = "testvals:ethernet:ip";
@@ -59,7 +59,7 @@ void test_xmlconfigreader::loadAndModifyExportSequenceOfFields()
 
     QString xmlRead = reader.getXMLConfig().simplified().remove(' ');
 
-    QFile xmlFile(xmlPath);
+    QFile xmlFile(xmlPathLocal);
     xmlFile.open(QFile::ReadOnly);
     QString xmlOrig = QString(xmlFile.readAll()).simplified().remove(' ');
     QVERIFY(xmlRead != xmlOrig);
